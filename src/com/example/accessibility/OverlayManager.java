@@ -1,25 +1,27 @@
 package com.example.accessibility;
+//package com.example.android.apis.accessibility;
 
 
-
+import android.accessibilityservice.AccessibilityService;
 import android.app.Instrumentation;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import android.widget.Toast;
+import android.view.accessibility.AccessibilityEvent;
 
-public class OverlayManager extends Service implements OnTouchListener 
+public class OverlayManager extends AccessibilityService implements OnInitListener
 {
 	
 	private ListenerView LV;
@@ -27,6 +29,30 @@ public class OverlayManager extends Service implements OnTouchListener
 	private long tsTempDown;
 	private Context mContext;
 	
+	
+	
+	@Override
+    public void onServiceConnected() {
+		Log.i("prints","entra onServiceConnected del Overlay");
+		createOverlayView(mContext);
+		
+    }
+	
+
+
+	@Override
+	public void onInterrupt() {
+		// TODO Auto-generated method stub
+		Log.i("prints","entra onInterrupt del Overlay");
+	}
+	@Override
+	public void onInit(int status) {
+		// TODO Auto-generated method stub
+		Log.i("prints","entra onInit del Overlay");
+	}
+
+
+	/*
 	public void onCreate() {
 		super.onCreate();
 	}
@@ -43,51 +69,50 @@ public class OverlayManager extends Service implements OnTouchListener
 		destroyOverlayView(mContext);
 		return super.onUnbind(intent);
 	}
-
-	/*public void onDestroy()
-	{
-		super.onDestroy();
-		destroyOverlayView();
-	}*/
-
+*/
+	
+	
 	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		Log.i("prints","entra onTouch del Overlay");
+	public void onAccessibilityEvent(AccessibilityEvent event) {
 		// TODO Auto-generated method stub
-		if (event.getAction() == MotionEvent.ACTION_DOWN){
+		Log.i("prints","entra onAccessibilityEvent del Overlay");
+		// TODO Auto-generated method stub
+		if (event.getEventType() == AccessibilityEvent.TYPE_TOUCH_INTERACTION_START){
 			//tsTempDown = new Timestamp(System.currentTimeMillis()).getTime();
-			tsTempDown = event.getDownTime();
+			tsTempDown = event.getEventTime();
 		}
 			//Toast.makeText(v.getContext(), x+" "+y, Toast.LENGTH_SHORT).show();
-		else if(event.getAction()==MotionEvent.ACTION_UP){
+		else if(event.getEventType()== AccessibilityEvent.TYPE_TOUCH_INTERACTION_END){
 			//long tsTempUp = new Timestamp(System.currentTimeMillis()).getTime();
 			long tsTempUp = event.getEventTime();
 			tsTempUp=tsTempUp-tsTempDown;
-			Float x= event.getX();
-			Float y= event.getY();
+			int x= event.getScrollX();
+			int y= event.getScrollY();
 			if (tsTempUp>2000)
 			{
 				destroyOverlayView(mContext);
 				click(x,y);
 			}
-		}
-			
-            //textView.setText("Touch coordinates : " +String.valueOf(event.getX()) + "x" + String.valueOf(event.getY()));
+			    //textView.setText("Touch coordinates : " +String.valueOf(event.getX()) + "x" + String.valueOf(event.getY()));
         
-        return true;
-    }
+        //return true;
+		}	
+	}
+
 	
-	
+
 	View getListenerView() {
 		return LV;
 	}
  
-	void setOnTouchListener(OnTouchListener listener) {
+	/*void setOnTouchListener(OnTouchListener listener) {
 		OTL = listener;
- }
+ }*/
 
  
 	void createOverlayView(Context context) {
+		Log.i("prints","entra createOverlayView del Overlay");
+	
 		mContext=context;
 		// ////////////////////////////////////////////////////////////////////////////////
         // ListenerView
@@ -106,14 +131,15 @@ public class OverlayManager extends Service implements OnTouchListener
         // ////////////////////////////////////////////////////////////////////////////////
        
 
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
         if ( LV == null ) {
-            LV = new ListenerView(context);
+            LV = new ListenerView(this.getApplicationContext());
             //LV.setTouchable(true);
-            LV.setOnTouchListener(this);
+            //LV.setOnTouchListener(this);
         	wm.addView(LV, listenerParams);
         }
+        Log.i("prints","acaba createOverlayView del Overlay");
 	}
 	
 	/* package */ void destroyOverlayView(Context context)
@@ -151,5 +177,14 @@ public class OverlayManager extends Service implements OnTouchListener
 			}
     	}).start();
     }
+
+
+
+	
+
+	
+
+	
+	
 
 }
