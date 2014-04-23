@@ -3,7 +3,7 @@
     
     android:accessibilityEventTypes="typeAllMask"
     android:packageNames="com.example.android.apis"
-    android:accessibilityFeedbackType="feedbackSpoken"
-    android:notificationTimeout="100"
+    android:accessibilityFeedbackType="feedbackSpoken|feedbackHaptic|feedbackAudible"
+    android:notificationTimeout="0"
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_query_window_description" />
