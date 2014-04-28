@@ -2,7 +2,7 @@
     package="com.example.accessibility"
     android:versionCode="1"
     android:versionName="1.0" >
-   
+    
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.NFC" />
-	<uses-permission android:name="android.permission.INJECT_EVENTS" />
 	 
     <uses-sdk
         android:minSdkVersion="16"
@@ -34,6 +33,15 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+        <receiver android:name="call_method"
+            android:enabled="true"
+    		android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="category" />
+            </intent-filter>
+        </receiver>
+      
     </application>
 
 </manifest>

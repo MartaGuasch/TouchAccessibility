@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">Accessibility</string>
-	<string name="accessibility_query_window_label">QueryBack</string>
+	<string name="accessibility_query_window_label">TouchAccessibility</string>
 	<string name="accessibility_query_window_description">Overlay</string>
 
 </resources>
