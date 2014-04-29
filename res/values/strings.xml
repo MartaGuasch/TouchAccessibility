@@ -4,4 +4,8 @@
 	<string name="accessibility_query_window_label">TouchAccessibility</string>
 	<string name="accessibility_query_window_description">Overlay</string>
 
+	<string name="pref_cat_time">Time for click</string>
+	<string name="pref_time">Sync time</string>
+	<string name="pref_time_summary">Set the time</string>
+	
 </resources>

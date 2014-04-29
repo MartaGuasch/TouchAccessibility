@@ -55,9 +55,9 @@ public class ListenerView extends ViewGroup{
         tDret.setFillType(FillType.EVEN_ODD);
         tDret.moveTo(aD.x, aD.y);
         tDret.lineTo(bD.x, bD.y);
-        tDret.moveTo(bD.x, bD.y);
+        //tDret.moveTo(bD.x, bD.y);
         tDret.lineTo(cD.x,cD.y);
-        tDret.moveTo(cD.x, cD.y);
+        //ºtDret.moveTo(cD.x, cD.y);
         tDret.lineTo(aD.x, aD.y);
         tDret.close();
         

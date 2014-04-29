@@ -158,6 +158,20 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    	Log.i("prints","acaba destroyOverlayView");
 	    }
 	}
+	
+	/* package */ PendingIntent destroyOverlay(Context context)
+	{
+    	WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+	    
+	    if (LV != null )
+	    {
+	    	wm.removeViewImmediate(LV);
+	    	LV = null;
+	    	Log.i("prints","acaba destroyOverlayView");
+	    }
+		return null;
+	}
+	
 	 
 	private Handler mHandler = new Handler() {
     	@Override
@@ -271,12 +285,15 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
 	private void triggerNotification(){
 	    
+		//Intent intent = new Intent(OverlayManager.destroyOverlayView(mContext));
+		
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         //Notification notification = new Notification(R.drawable.images, "¡Nuevo mensaje!", System.currentTimeMillis());
         Notification notification = new Notification.Builder(this)
         .setContentText("Hola hola")
         .setSmallIcon(R.drawable.images)
         .setWhen(System.currentTimeMillis())
+        .addAction(R.drawable.ic_launcher, "Apaga TouchAccessibility",destroyOverlay(mContext) )
         .build();
         
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
@@ -284,10 +301,12 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         contentView.setTextViewText(R.id.txt_notification, "Ey mundo! Esta es mi notificación personalizada.");
         
         notification.contentView = contentView;
-        
+        /*
         Intent notificationIntent = new Intent(this, OverlayManager.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = contentIntent;
+        notification.contentIntent = contentIntent;*/
+        
+        
         
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
