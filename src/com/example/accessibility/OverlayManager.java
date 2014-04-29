@@ -57,6 +57,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	public void onAccessibilityEvent(AccessibilityEvent event) {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+    public void onDestroy() {
+       destroyOverlayView(mContext);
+        super.onDestroy();
+    }
+
 
 
 	/*
