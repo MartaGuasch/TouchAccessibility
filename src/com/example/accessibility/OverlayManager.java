@@ -159,20 +159,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    }
 	}
 	
-	/* package */ PendingIntent destroyOverlay(Context context)
-	{
-    	WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-	    
-	    if (LV != null )
-	    {
-	    	wm.removeViewImmediate(LV);
-	    	LV = null;
-	    	Log.i("prints","acaba destroyOverlayView");
-	    }
-		return null;
-	}
-	
-	 
+
 	private Handler mHandler = new Handler() {
     	@Override
     	public void handleMessage (Message msg) {  
@@ -285,15 +272,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
 	private void triggerNotification(){
 	    
-		//Intent intent = new Intent(OverlayManager.destroyOverlayView(mContext));
-		
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         //Notification notification = new Notification(R.drawable.images, "¡Nuevo mensaje!", System.currentTimeMillis());
         Notification notification = new Notification.Builder(this)
         .setContentText("Hola hola")
         .setSmallIcon(R.drawable.images)
         .setWhen(System.currentTimeMillis())
-        .addAction(R.drawable.ic_launcher, "Apaga TouchAccessibility",destroyOverlay(mContext) )
+        //.addAction(R.drawable.ic_launcher, "Apaga TouchAccessibility",destroyOverlay(mContext) )
         .build();
         
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
