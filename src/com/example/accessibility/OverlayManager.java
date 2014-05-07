@@ -1,5 +1,4 @@
 package com.example.accessibility;
-//package com.example.android.apis.accessibility;
 
 
 import android.accessibilityservice.AccessibilityService;
@@ -9,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -32,6 +32,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 {
 	private final int NOTIFICATION_ID = 1010;
 	private ListenerView LV;
+	private FeedbackClickView mFCV;
 	private OnTouchListener OTL;
 	private long tsTempDown;
 	private Context mContext;
@@ -42,7 +43,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     public void onServiceConnected() {
 		Log.i("prints","entra onServiceConnected del Overlay");
 		triggerNotification();
-		createOverlayView(mContext);
+		//createOverlayView(mContext);
+		
     }
 	
 
@@ -86,11 +88,18 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		Log.i("prints","entra onTouch del Overlay");
+		
+		//LV.onDrawNodeBorder(node, "hola");
+		//Log.i("prints","entra onTouch del Overlay");
 		// TODO Auto-generated method stub
 		if (event.getAction() == MotionEvent.ACTION_DOWN){
 			Log.i("prints","eventDown");
 			tsTempDown = event.getDownTime();
+			int x= (int) event.getX();
+			int y= (int) event.getY();
+			
+			createFeedbackClickView(mContext,Color.YELLOW);
+			
 		}
 		
 		else if(event.getAction()==MotionEvent.ACTION_UP){
@@ -98,12 +107,17 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			long tsTempUp = event.getEventTime();
 			tsTempUp=tsTempUp-tsTempDown;
 			Log.i("prints","temps de click"+tsTempUp);
-			Float x= event.getX();
-			Float y= event.getY();
+			
+			Float x = event.getX();
+			Float y = event.getY();
+			
+			//LV.onDrawNodeBorder(node,"orange");
+			Log.i("prints","border orange");
 			if (tsTempUp>2000)
 			{
+				//LV.onDrawNodeBorder(node,"green");
+				Log.i("prints","border green");
 				destroyOverlayView(mContext);
-			
 				click(x,y);
 			}
 		}
@@ -113,14 +127,49 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     }
 	
 
-	View getListenerView() {
+	ListenerView getListenerView() {
 		return LV;
 	}
  
-	/*void setOnTouchListener(OnTouchListener listener) {
-		OTL = listener;
- }*/
+	void createFeedbackClickView(Context context,int color){
+		Log.i("prints","entra createFeedBackClickView del Overlay");
+		
+		mContext=context;
+		// ////////////////////////////////////////////////////////////////////////////////
+        // FeedbackClickView
+        LayoutParams feedbackParams = new LayoutParams();
+        feedbackParams.setTitle("OverlayManager");
 
+        // Set a transparent background
+        feedbackParams.format = PixelFormat.TRANSLUCENT;
+
+        // Create an always on top type of window:
+         //  TYPE_SYSTEM_ALERT   = touch events are intercepted
+        feedbackParams.type = LayoutParams.TYPE_SYSTEM_ALERT;
+
+        feedbackParams.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
+        
+        // The whole screen is covered (including status bar)
+        feedbackParams.flags = LayoutParams.FLAG_LAYOUT_INSET_DECOR | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        // ////////////////////////////////////////////////////////////////////////////////
+       
+
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        
+        if ( mFCV == null ) {
+            mFCV = new FeedbackClickView(this.getApplicationContext());
+            mFCV.setHighlightColor(color);
+			/*if (node!=null){
+				Log.i("prints","Node no null");
+				mFCV.setNode(node);
+			}*/
+            //LV.setTouchable(true);
+            //mFCV.setOnTouchListener(this);
+        	wm.addView(mFCV, feedbackParams);
+        }
+        Log.i("prints","acaba createFeedbackClickView del Overlay");
+	}
+	
  
 	void createOverlayView(Context context) {
 		Log.i("prints","entra createOverlayView del Overlay");
@@ -174,23 +223,6 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	}
 	};
 	
-	/*private void click(final float x, final float y) {
-    	new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Log.w("prints", "entra click");
-				Instrumentation i = new Instrumentation();
-				MotionEvent down = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN,x, y, 0);
-				MotionEvent up = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
-				i.sendPointerSync(down);
-				i.sendPointerSync(up);
-				up.recycle();
-				down.recycle();
-				Log.i("prints","final click");
-				mHandler.sendEmptyMessage(0);
-			}
-    	}).start();
-    }*/
 
 	//Touch Overlay Listener 
 	public void click(float x,float y){
@@ -198,7 +230,19 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		int posx = (int)x;
 		int posy = (int) y;
 
-		//AccessibilityNodeInfo activeRoot = this.getRootInActiveWindow(); //this is an AccessibilityService instance
+		AccessibilityNodeInfoCompat node = findNode();
+		if(node!=null){Log.i("prints", "el node no es null "+posx+"  "+posy);}	
+		AccessibilityNodeInfoCompat comp = findComponentClickable(node,posx, posy);
+		if (comp != null) {
+			Log.i("prints","injecta click del Overlay");
+				//getListenerView().onDrawNodeBorder();
+					boolean s = comp.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+					}	
+		mHandler.sendEmptyMessage(0);
+		
+	}					
+			
+	private AccessibilityNodeInfoCompat findNode(){
 		AccessibilityNodeInfoCompat node = getCursor();
 		int contador = 0;
 		synchronized (mHandler) {
@@ -214,15 +258,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				}
 			}
 		}
-		if(node!=null){Log.i("prints", "el node no es null");}	
-		AccessibilityNodeInfoCompat comp = findComponentClickable(node,posx, posy);
-		if (comp != null) {
-			Log.i("prints","injecta click del Overlay");
-					boolean s = comp.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-					}	
-		mHandler.sendEmptyMessage(0);
-	}					
-							
+		return node;
+	}
+	
+	
 	private AccessibilityNodeInfoCompat findComponentClickable(AccessibilityNodeInfoCompat root, int posx, int posy) {
 			try {
 				Log.i("prints","entra findComponentClickable del Overlay");

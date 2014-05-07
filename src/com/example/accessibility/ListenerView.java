@@ -1,37 +1,94 @@
 package com.example.accessibility;
 
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Join;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.ViewGroup;
 
 public class ListenerView extends ViewGroup{
+	
 
 	public ListenerView(Context context) {
 		super(context);
         paint.setColor(Color.BLACK);
+       
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub
-		//int width=r-l;
+		//super.onLayout(changed, l, t, r, b);
+
+        //getLocationOnScreen(SCREEN_LOCATION);
+
+		
+		
 	}
 	Paint paint = new Paint();
+	/*
+	public void onDrawNodeBorder(AccessibilityNodeInfoCompat node, int color){
+			Log.i("prints","entra al onDrawNodeBorder");
+	        //canvas.translate(-SCREEN_LOCATION[0], -SCREEN_LOCATION[1]);
+	        //canvas.setMatrix(mMatrix);
+
+	        mPaint.setColor(mHighlightColor);
+
+	        //node.getBoundsInScreen(mTemp);
+	        canvas.drawRect(mTemp, mPaint);
+	            
+	        Log.i("prints","acaba el onDrawNodeBorder");
+	
+
+	}*/
 
     @Override
     public void onDraw(Canvas canvas) {
-    	super.onDraw(canvas);
-        Paint paint = new Paint();
+    	
+    	/*
+    	final int saveCount = canvas.save();
+        canvas.translate(-SCREEN_LOCATION[0], -SCREEN_LOCATION[1]);
+        canvas.setMatrix(mMatrix);
 
-        /*paint.setColor(android.graphics.Color.BLACK);
+        mPaint.setColor(mHighlightColor);
+
+        for (AccessibilityNodeInfoCompat node : mNodes) {
+            node.getBoundsInScreen(mTemp);
+            canvas.drawRect(mTemp, mPaint);
+        }
+
+        canvas.restoreToCount(saveCount);
+
+   
+    	super.onDraw(canvas);
+        Paint paint = new Paint();*/
+    	/*mHighlightColor=getHighlightColor();
+    	node=getNode();
+    	if (node!=null){Log.i("prints","node no es null");}
+    	Log.i("prints","Color: "+mHighlightColor);
+    	
+    	if((mHighlightColor==Color.YELLOW)&&(node!=null)){
+    		Log.i("prints","entra condicio x highlight");
+    		onDrawNodeBorder(node,mHighlightColor);
+    		
+    	}*/
+    	
+    	
+    	/*paint.setColor(android.graphics.Color.BLACK);
         canvas.drawPaint(paint);
         */
         paint.setStrokeWidth(4);
@@ -100,7 +157,21 @@ public class ListenerView extends ViewGroup{
         
         canvas.drawPath(tTop, paint);*/
     }
-    
-    
+    /*
+    public void setHighlightColor(int color) {
+    	Log.i("prints","entra setHighlightColor");
+        mHighlightColor = color;
+    }
+    public void setNode(AccessibilityNodeInfoCompat mnode) {
+    	Log.i("prints","entrasetNode");
+        node = mnode;
+    }
+    public int getHighlightColor(){
+    	return mHighlightColor;
+    }
+    public AccessibilityNodeInfoCompat getNode(){
+    	return node;
+    }
+   */
 
 }
