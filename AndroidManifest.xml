@@ -3,6 +3,8 @@
     android:versionCode="1"
     android:versionName="1.0" >
     
+    
+    <uses-permission android:name ="android.permission.BIND_ACCESSIBILITY_SERVICE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -24,8 +26,7 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme" >
 		<service android:name=".OverlayManager"
-                 android:label="@string/accessibility_query_window_label"
-                 android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+                 android:label="@string/accessibility_query_window_label">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

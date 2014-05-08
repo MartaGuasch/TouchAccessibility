@@ -2,9 +2,9 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     
     android:accessibilityEventTypes="typeAllMask"
-    android:packageNames="com.example.android.apis"
-    android:accessibilityFeedbackType="feedbackSpoken|feedbackHaptic|feedbackAudible"
-    android:notificationTimeout="0"
+    android:accessibilityFeedbackType="feedbackVisual|feedbackAudible"
+    android:notificationTimeout="100"
     android:settingsActivity="com.example.accessibility.AccessibilitySettings"
     android:canRetrieveWindowContent="true"
-    android:description="@string/accessibility_query_window_description" />
+    android:description="@string/accessibility_query_window_description" 
+    android:accessibilityFlags="flagDefault"/>

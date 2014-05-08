@@ -43,7 +43,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     public void onServiceConnected() {
 		Log.i("prints","entra onServiceConnected del Overlay");
 		triggerNotification();
-		//createOverlayView(mContext);
+		createOverlayView(mContext);
 		
     }
 	
