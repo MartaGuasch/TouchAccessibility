@@ -36,6 +36,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private OnTouchListener OTL;
 	private long tsTempDown;
 	private Context mContext;
+	private int clickTime=2000;
+	private int n=0,i=0;
 	
 	
 	
@@ -97,9 +99,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			tsTempDown = event.getDownTime();
 			int x= (int) event.getX();
 			int y= (int) event.getY();
-			
-			createFeedbackClickView(mContext,x,y);
-			
+			createFeedbackClickView(mContext);
+			mFCV.setXY(x, y);	
 		}
 		
 		else if(event.getAction()==MotionEvent.ACTION_UP){
@@ -113,13 +114,26 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			//LV.onDrawNodeBorder(node,"orange");
 			Log.i("prints","border orange");
-			if (tsTempUp>2000)
+			if (tsTempUp>clickTime)
 			{
 				//LV.onDrawNodeBorder(node,"green");
 				Log.i("prints","border green");
 				destroyOverlayView(mContext);
 				click(x,y);
 			}
+		}
+		else{
+			long tsTempMid=event.getEventTime();
+			if(tsTempMid-tsTempDown<=200+n){
+				Log.w("prints","entra if i hi ha "+i+" graus");
+				mFCV.setDeg(36+i);
+			}
+			n=n+100;
+			i=i+36;
+			tsTempMid=event.getEventTime();
+			
+			
+			
 		}
 			
         
@@ -131,7 +145,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		return LV;
 	}
  
-	void createFeedbackClickView(Context context,int x,int y){
+	void createFeedbackClickView(Context context){
 		Log.i("prints","entra createFeedBackClickView del Overlay");
 		
 		mContext=context;
@@ -160,7 +174,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         	
             mFCV = new FeedbackClickView(this.getApplicationContext());
 
-            mFCV.setXY(x,y);
+            //mFCV.setXY(x,y);
             //mFCV.setRadius(per);
         	wm.addView(mFCV, feedbackParams);
         }

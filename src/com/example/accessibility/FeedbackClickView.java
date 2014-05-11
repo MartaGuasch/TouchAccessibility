@@ -6,17 +6,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
+import android.util.Log;
 import android.view.ViewGroup;
 
 public class FeedbackClickView extends ViewGroup{
 	private Paint paint = new Paint();
     private RectF oval;
 
-    private int posx,posy;
+    private int posx,posy, deg;
     //private int heightAvailableForCircle;
     //private int widthAvailableForCircle;
     //private int maxRadius;
@@ -30,6 +29,7 @@ public class FeedbackClickView extends ViewGroup{
         paint.setStyle(Style.FILL);
         //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         oval = new RectF(posx+50, posy+50, posx+150, posy+150);
+        deg=0;
 
     }
 	@Override
@@ -38,23 +38,18 @@ public class FeedbackClickView extends ViewGroup{
 	}
 	
 	public void onDraw(Canvas canvas){
-        //paint.setColor(Color.WHITE);
-        //setHeightAvailableForCircle(getViewHeight() - barEndY);
-        //setWidthAvailableForCircle(getViewWidth() - 40);
-        //paint.setColor(Color.BLUE);
-        //setMaxRadius(heightAvailableForCircle, widthAvailableForCircle);
-        //paint.setColor(Color.BLUE);
-        //setRadius(whatPercentOfSeekBarIsSelected);
-		//oval = new RectF(posx+50, posy+50, posx+150, posy+150);
-        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        //drawable.draw(canvas);
-        canvas.drawArc(oval, 30, 90, true, paint);
+		Log.i("prints","onDraw Feedback");
+        canvas.drawArc(oval, 270, deg, true, paint);
         //canvas.drawCircle( (canvas.getWidth())/2, (canvas.getHeight() - 30)/2, radius, paint);
+        invalidate();
     }
 	
 	void setXY(int x, int y){
 		posx=x;
 		posy=y;
+	}
+	void setDeg(int degr){
+		deg=degr;
 	}
 
 	/*
