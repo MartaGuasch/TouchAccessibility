@@ -37,7 +37,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private long tsTempDown;
 	private Context mContext;
 	private int clickTime=2000;
-	private int n=0,i=0;
+	private int n,i;
 	
 	
 	
@@ -95,6 +95,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		//Log.i("prints","entra onTouch del Overlay");
 		// TODO Auto-generated method stub
 		if (event.getAction() == MotionEvent.ACTION_DOWN){
+			n=0;i=0;
 			Log.i("prints","eventDown");
 			tsTempDown = event.getDownTime();
 			int x= (int) event.getX();
@@ -104,6 +105,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 		
 		else if(event.getAction()==MotionEvent.ACTION_UP){
+			destroyFeedbackClickView(mContext);
 			Log.i("prints","eventUp");
 			long tsTempUp = event.getEventTime();
 			tsTempUp=tsTempUp-tsTempDown;
@@ -123,14 +125,18 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			}
 		}
 		else{
-			long tsTempMid=event.getEventTime();
-			if(tsTempMid-tsTempDown<=200+n){
-				Log.w("prints","entra if i hi ha "+i+" graus");
+			long tsTempMid=event.getEventTime()-tsTempDown;
+			if(tsTempMid<200+n){
+				Log.w("prints","entra if i hi ha "+i+" graus i "+n+" ms");
 				mFCV.setDeg(36+i);
 			}
-			n=n+100;
-			i=i+36;
-			tsTempMid=event.getEventTime();
+			else{
+				n=n+200;
+				i=i+36;
+			}
+			
+			tsTempMid=event.getEventTime()-tsTempDown;
+			Log.i("prints","temps de click "+tsTempMid+" n "+n);
 			
 			
 			
@@ -214,6 +220,17 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         Log.i("prints","acaba createOverlayView del Overlay");
 	}
 	
+	/* package */ void destroyFeedbackClickView(Context context)
+	{
+    	WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+	    
+	    if (LV != null )
+	    {
+	    	wm.removeViewImmediate(mFCV);
+	    	mFCV = null;
+	    	Log.i("prints","acaba destroyOverlayView");
+	    }
+	}
 	/* package */ void destroyOverlayView(Context context)
 	{
     	WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
