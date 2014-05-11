@@ -95,10 +95,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		if (event.getAction() == MotionEvent.ACTION_DOWN){
 			Log.i("prints","eventDown");
 			tsTempDown = event.getDownTime();
-			//int x= (int) event.getX();
-			//int y= (int) event.getY();
+			int x= (int) event.getX();
+			int y= (int) event.getY();
 			
-			createFeedbackClickView(mContext,Color.YELLOW);
+			createFeedbackClickView(mContext,x,y);
 			
 		}
 		
@@ -131,7 +131,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		return LV;
 	}
  
-	void createFeedbackClickView(Context context,int color){
+	void createFeedbackClickView(Context context,int x,int y){
 		Log.i("prints","entra createFeedBackClickView del Overlay");
 		
 		mContext=context;
@@ -157,9 +157,11 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
         if ( mFCV == null ) {
+        	
             mFCV = new FeedbackClickView(this.getApplicationContext());
-            int per =50;
-            mFCV.setRadius(per);
+
+            mFCV.setXY(x,y);
+            //mFCV.setRadius(per);
         	wm.addView(mFCV, feedbackParams);
         }
         Log.i("prints","acaba createFeedbackClickView del Overlay");

@@ -1,18 +1,22 @@
 package com.example.accessibility;
 
 
+
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 
 import android.view.ViewGroup;
 
 public class FeedbackClickView extends ViewGroup{
 	private Paint paint = new Paint();
-    //private int width = 0;
-    //private int height = 0;
-    private int radius;
+    private RectF oval;
+
+    private int posx,posy;
     //private int heightAvailableForCircle;
     //private int widthAvailableForCircle;
     //private int maxRadius;
@@ -21,7 +25,12 @@ public class FeedbackClickView extends ViewGroup{
     public FeedbackClickView (Context context){
     	
     	super (context);
-    	
+    	paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(0xFFFFFFFF);
+        paint.setStyle(Style.FILL);
+        //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        oval = new RectF(posx+50, posy+50, posx+150, posy+150);
+
     }
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -34,16 +43,20 @@ public class FeedbackClickView extends ViewGroup{
         //setWidthAvailableForCircle(getViewWidth() - 40);
         //paint.setColor(Color.BLUE);
         //setMaxRadius(heightAvailableForCircle, widthAvailableForCircle);
-        paint.setColor(Color.BLUE);
+        //paint.setColor(Color.BLUE);
         //setRadius(whatPercentOfSeekBarIsSelected);
-        canvas.drawCircle( (canvas.getWidth())/2, (canvas.getHeight() - 30)/2, radius, paint);
+		//oval = new RectF(posx+50, posy+50, posx+150, posy+150);
+        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        //drawable.draw(canvas);
+        canvas.drawArc(oval, 30, 90, true, paint);
+        //canvas.drawCircle( (canvas.getWidth())/2, (canvas.getHeight() - 30)/2, radius, paint);
     }
 	
-
-	void setRadius(int per){
-	
-	    this.radius = per;
+	void setXY(int x, int y){
+		posx=x;
+		posy=y;
 	}
+
 	/*
 	private void setRadius(int total, int current){
 
