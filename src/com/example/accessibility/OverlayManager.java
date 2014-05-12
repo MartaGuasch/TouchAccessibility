@@ -27,6 +27,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class OverlayManager extends AccessibilityService implements OnTouchListener
 {
@@ -114,14 +115,30 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			Float x = event.getX();
 			Float y = event.getY();
+			int left = LV.getPaddingLeft();
+	        int top = LV.getPaddingTop();
+	        int right =  LV.getWidth() - LV.getPaddingRight();
+	        int bottom = LV.getHeight() - LV.getPaddingBottom();
 			
-			//LV.onDrawNodeBorder(node,"orange");
-			Log.i("prints","border orange");
+			
+			
 			if (tsTempUp>clickTime)
 			{
 				//LV.onDrawNodeBorder(node,"green");
 				Log.i("prints","border green");
 				destroyOverlayView(mContext);
+				if((x>=right-80)&&(x<=right)&&(y>=bottom/2)&&(y<=bottom/2+80)){
+					Log.i("prints","Scroll right");
+				}
+				if((x>=left)&&(x<=left+80)&&(y>=bottom/2)&&(y<=bottom/2+80)){
+					Log.i("prints","Scroll left");
+				}
+				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=top+30)&&(y<=top+110)){
+					Log.i("prints","Scroll top");
+				}
+				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=bottom-90)&&(y<=bottom-10)){
+					Log.i("prints","Scroll down");
+				}
 				click(x,y);
 			}
 		}
@@ -269,7 +286,14 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 					}	
 		mHandler.sendEmptyMessage(0);
 		
-	}					
+	}			
+	public void scrollRight(){
+		//Log.i("prints","entra click del Overlay");
+		Log.i("prints","injecta click del Overlay");
+		
+		mHandler.sendEmptyMessage(0);
+		
+	}				
 			
 	private AccessibilityNodeInfoCompat findNode(){
 		AccessibilityNodeInfoCompat node = getCursor();

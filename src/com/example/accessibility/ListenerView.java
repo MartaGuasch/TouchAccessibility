@@ -103,6 +103,11 @@ public class ListenerView extends ViewGroup{
         
        //canvas.drawLine(left, top, right, bottom, paint);
         
+        canvas.drawRect(right-80, bottom/2+80, right, bottom/2, paint);
+        canvas.drawRect(left, bottom/2+80, left+80, bottom/2, paint);
+        canvas.drawRect(right/2-40, bottom-90, right/2+40, bottom-10, paint);
+        canvas.drawRect(right/2-40, top+30, right/2+40, top+110, paint);
+        /*
         //Dibuixem el triangle de la dreta (per fer scroll dreta)
         Point aD = new Point(right-80, bottom/2+50);
         Point bD = new Point(right-80, bottom/2-50);
