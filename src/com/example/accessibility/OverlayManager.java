@@ -37,6 +37,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private long tsTempDown;
 	private Context mContext;
 	private int clickTime=2000;
+	private int clickTimeSec=clickTime/20;
 	private int n,i;
 	
 	
@@ -126,13 +127,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 		else{
 			long tsTempMid=event.getEventTime()-tsTempDown;
-			if(tsTempMid<200+n){
+			if(tsTempMid<clickTimeSec+n){
 				Log.w("prints","entra if i hi ha "+i+" graus i "+n+" ms");
-				mFCV.setDeg(36+i);
+				mFCV.setDeg(18+i);
 			}
 			else{
-				n=n+200;
-				i=i+36;
+				n=n+clickTimeSec;
+				i=i+18;
 			}
 			
 			tsTempMid=event.getEventTime()-tsTempDown;
