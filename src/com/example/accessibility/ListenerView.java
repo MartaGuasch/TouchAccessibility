@@ -1,27 +1,22 @@
 package com.example.accessibility;
 
 
-import java.util.HashSet;
-import java.util.Iterator;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Join;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.util.Log;
 import android.view.ViewGroup;
 
 public class ListenerView extends ViewGroup{
-	
-
+    Path tRight= new Path();
+    Path tLeft= new Path();
+    Path tTop= new Path();
+    Path tBottom= new Path();
+    
 	public ListenerView(Context context) {
 		super(context);
         paint.setColor(Color.BLACK);
@@ -92,7 +87,7 @@ public class ListenerView extends ViewGroup{
         canvas.drawPaint(paint);
         */
         paint.setStrokeWidth(4);
-        paint.setColor(android.graphics.Color.RED);
+        paint.setColor(android.graphics.Color.WHITE);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setAntiAlias(true);
         
@@ -107,6 +102,60 @@ public class ListenerView extends ViewGroup{
         canvas.drawRect(left, bottom/2+80, left+80, bottom/2, paint);
         canvas.drawRect(right/2-40, bottom-90, right/2+40, bottom-10, paint);
         canvas.drawRect(right/2-40, top+30, right/2+40, top+110, paint);
+        
+        //Drowing triangle (right arrow)
+        paint.setColor(android.graphics.Color.BLACK);
+        Point aL = new Point(right-70, bottom/2+70);
+        Point bL = new Point(right-70, bottom/2+10);
+        Point cL = new Point(right-10, bottom/2+40);
+        tRight.setFillType(FillType.EVEN_ODD);
+        tRight.moveTo(aL.x, aL.y);
+        tRight.lineTo(bL.x, bL.y);
+        tRight.lineTo(cL.x,cL.y);
+        tRight.lineTo(aL.x, aL.y);
+        tRight.close();
+        canvas.drawPath(tRight, paint);
+        
+        
+        //Drowing triangle (left arrow)
+        paint.setColor(android.graphics.Color.BLACK);
+        Point aR =new Point (left+70, bottom/2+70);
+        Point bR = new Point(left+70, bottom/2+10);
+        Point cR = new Point(left+10, bottom/2+40);
+        tLeft.setFillType(FillType.EVEN_ODD);
+        tLeft.moveTo(aR.x, aR.y);
+        tLeft.lineTo(bR.x, bR.y);
+        tLeft.lineTo(cR.x, cR.y);
+        tLeft.lineTo(aR.x, aR.y);
+        tLeft.close();
+        canvas.drawPath(tLeft, paint);
+        
+        //Drowing triangle (top arrow)
+        paint.setColor(android.graphics.Color.BLACK);
+        Point aT = new Point(right/2-30, top+100);
+        Point bT = new Point(right/2, top+40);
+        Point cT = new Point(right/2+30, top+100);
+        tRight.setFillType(FillType.EVEN_ODD);
+        tRight.moveTo(aT.x, aT.y);
+        tRight.lineTo(bT.x, bT.y);
+        tRight.lineTo(cT.x,cT.y);
+        tRight.lineTo(aT.x, aT.y);
+        tRight.close();
+        canvas.drawPath(tRight, paint);
+        
+        //Drowing triangle (bottom arrow)
+        paint.setColor(android.graphics.Color.BLACK);
+        Point aB =new Point (right/2-30, bottom-80);
+        Point bB = new Point(right/2, bottom-20);
+        Point cB = new Point(right/2+30, bottom-80);
+        tLeft.setFillType(FillType.EVEN_ODD);
+        tLeft.moveTo(aB.x, aB.y);
+        tLeft.lineTo(bB.x, bB.y);
+        tLeft.lineTo(cB.x, cB.y);
+        tLeft.lineTo(aB.x, aB.y);
+        tLeft.close();
+        canvas.drawPath(tLeft, paint);
+        
         /*
         //Dibuixem el triangle de la dreta (per fer scroll dreta)
         Point aD = new Point(right-80, bottom/2+50);
