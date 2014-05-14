@@ -183,12 +183,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         // Create an always on top type of window:
          //  TYPE_SYSTEM_ALERT   = touch events are intercepted
-        feedbackParams.type = LayoutParams.TYPE_SYSTEM_ALERT;
-
-        feedbackParams.type = LayoutParams.TYPE_SYSTEM_OVERLAY;
+        feedbackParams.type =  LayoutParams.TYPE_SYSTEM_ALERT;
         
         // The whole screen is covered (including status bar)
-        feedbackParams.flags = LayoutParams.FLAG_LAYOUT_INSET_DECOR | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        feedbackParams.flags = LayoutParams.FLAG_LAYOUT_INSET_DECOR | LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         // ////////////////////////////////////////////////////////////////////////////////
        
 
@@ -220,10 +218,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         // Create an always on top type of window:
          //  TYPE_SYSTEM_ALERT   = touch events are intercepted
-        listenerParams.type = LayoutParams.TYPE_SYSTEM_ALERT;
+        listenerParams.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_PHONE	| LayoutParams.TYPE_SYSTEM_OVERLAY; 
         
         // The whole screen is covered (including status bar)
-        listenerParams.flags = LayoutParams.FLAG_LAYOUT_INSET_DECOR | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        listenerParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         // ////////////////////////////////////////////////////////////////////////////////
        
 

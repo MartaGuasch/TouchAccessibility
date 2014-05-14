@@ -4,6 +4,7 @@ package com.example.accessibility;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
@@ -25,7 +26,7 @@ public class FeedbackClickView extends ViewGroup{
     	
     	super (context);
     	paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(0xFFFFFFFF);
+        paint.setARGB(128,0,255,0);
         paint.setStyle(Style.FILL);
         //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         oval = new RectF(posx+50, posy+50, posx+150, posy+150);
@@ -40,7 +41,6 @@ public class FeedbackClickView extends ViewGroup{
 	public void onDraw(Canvas canvas){
 		Log.i("prints","onDraw Feedback");
         canvas.drawArc(oval, 270, deg, true, paint);
-        //canvas.drawCircle( (canvas.getWidth())/2, (canvas.getHeight() - 30)/2, radius, paint);
         invalidate();
     }
 	
