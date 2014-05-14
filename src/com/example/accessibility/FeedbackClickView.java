@@ -28,8 +28,13 @@ public class FeedbackClickView extends ViewGroup{
     	paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setARGB(128,0,255,0);
         paint.setStyle(Style.FILL);
+        
+        
         //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        oval = new RectF(posx+50, posy+50, posx+150, posy+150);
+        
+        
+        oval = new RectF(50,50,150,150);
+        		//(posx+50, posy+50, posx+150, posy+150);
         deg=0;
 
     }
@@ -40,6 +45,19 @@ public class FeedbackClickView extends ViewGroup{
 	
 	public void onDraw(Canvas canvas){
 		Log.i("prints","onDraw Feedback");
+		
+		int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int right =  getWidth() - getPaddingRight();
+        int bottom = getHeight() - getPaddingBottom();
+        
+        if ((posx<=right/2)&&(posy<=bottom/2)){
+        	oval.set(right-150, top+50, right-50, top+150);
+        }
+        else{
+        	oval.set(50, 50, 150, 150);
+        }
+		
         canvas.drawArc(oval, 270, deg, true, paint);
         invalidate();
     }
