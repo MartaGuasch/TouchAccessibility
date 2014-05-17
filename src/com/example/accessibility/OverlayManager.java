@@ -1,6 +1,8 @@
 package com.example.accessibility;
 
 
+import java.lang.reflect.Method;
+
 import android.accessibilityservice.AccessibilityService;
 import android.app.Instrumentation;
 import android.app.Notification;
@@ -14,6 +16,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.NotificationCompat;
@@ -40,6 +43,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private int clickTime=2000;
 	private int clickTimeSec=clickTime/20;
 	private int n,i;
+	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
+            AccessibilityService.class, "performGlobalAction", int.class);
+
 	
 	
 	
@@ -139,6 +145,21 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Scroll down");
 				}
+				if((x>=right-80)&&(x<=right)&&(y>=bottom-90)&&(y<=bottom-10)){
+					Log.i("prints","Home");
+					performGlobalAction(this,GLOBAL_ACTION_HOME);
+					/*
+					IAccessibilityServiceConnection connection = AccessibilityInteractionClient.getInstance().getConnection(mConnectionId);
+							if (connection != null) {
+							try {
+							return connection.performGlobalAction(action);
+							} catch (RemoteException re) {
+							Log.w(LOG_TAG, "Error while calling performGlobalAction", re);
+							}
+							}
+							return false;*/
+				}
+				
 				click(x,y);
 			}
 		}
@@ -392,6 +413,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
+	public static boolean performGlobalAction(AccessibilityService service, int action) {
+        return (Boolean) CompatUtils.invoke(service, false, METHOD_performGlobalAction, action);
+    }
+
 	
 	}
 
