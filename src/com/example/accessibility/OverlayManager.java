@@ -148,17 +148,14 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				if((x>=right-80)&&(x<=right)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Home");
 					performGlobalAction(this,GLOBAL_ACTION_HOME);
-					/*
-					IAccessibilityServiceConnection connection = AccessibilityInteractionClient.getInstance().getConnection(mConnectionId);
-							if (connection != null) {
-							try {
-							return connection.performGlobalAction(action);
-							} catch (RemoteException re) {
-							Log.w(LOG_TAG, "Error while calling performGlobalAction", re);
-							}
-							}
-							return false;*/
 				}
+				if((x>=left)&&(x<=left+80)&&(y>=bottom-90)&&(y<=bottom-10)){
+					Log.i("prints","Back");
+					performGlobalAction(this,GLOBAL_ACTION_BACK);
+				}
+				
+				
+				
 				
 				click(x,y);
 			}

@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.view.ViewGroup;
 
 public class ListenerView extends ViewGroup{
@@ -16,6 +17,7 @@ public class ListenerView extends ViewGroup{
     Path tLeft= new Path();
     Path tTop= new Path();
     Path tBottom= new Path();
+    Path path =new Path();
     
     Paint paintBlack = new Paint();
 	Paint paintWhite = new Paint();
@@ -23,11 +25,13 @@ public class ListenerView extends ViewGroup{
 	Point a = new Point();
 	Point b = new Point();
 	Point c = new Point();
+	RectF oval;
     
 	public ListenerView(Context context) {
 		super(context);
         paintBlack.setColor(Color.BLACK);
         paintWhite.setColor(Color.WHITE);
+        oval = new RectF (50, 40,70,-60);
        
 		// TODO Auto-generated constructor stub
 	}
@@ -116,6 +120,7 @@ public class ListenerView extends ViewGroup{
         //Drawing general buttons
         canvas.drawRect(right-80, bottom-90, right, bottom-10, paintWhite);
         canvas.drawRect(right-70, bottom-55, right-10, bottom-20, paintBlack);
+        canvas.drawRect(left, bottom-90, left+80, bottom-10, paintWhite);
         
         a.set(right-70, bottom-55);
         b.set(right-10, bottom-55);
@@ -126,6 +131,23 @@ public class ListenerView extends ViewGroup{
         tLeft.lineTo(a.x, a.y);
         tLeft.close();
         canvas.drawPath(tLeft, paintBlack);
+        
+        paintBlack.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(left+30, bottom-40, left+60, bottom-40, paintBlack);
+        oval.set(left+50, bottom-60, left+70,bottom-40);
+        canvas.drawArc(oval, 270, 180, true, paintBlack);
+        canvas.drawRect(left+10, bottom-60, left+60, bottom-60, paintBlack);
+        //canvas.drawRect(left+10, bottom-70, left+20, bottom-60, paintBlack);
+        //canvas.drawRect(left+10, bottom-60, left+20, bottom-50, paintBlack);
+        a.set(left+20, bottom-50);
+        b.set(left+10, bottom-60);
+        c.set(left+20, bottom-70);
+        path.moveTo(a.x, a.y);
+        path.lineTo(b.x, b.y);
+        path.moveTo(b.x, b.y);
+        path.lineTo(c.x, c.y);
+        canvas.drawPath(path, paintBlack);
+        paintBlack.setStyle(Paint.Style.FILL_AND_STROKE);
         
         
         //-----------------------------------------------------------------------------//
