@@ -44,7 +44,7 @@ public class FeedbackClickView extends ViewGroup{
 	}
 	
 	public void onDraw(Canvas canvas){
-		Log.i("prints","onDraw Feedback");
+		//Log.i("prints","onDraw Feedback");
 		
 		int left = getPaddingLeft();
         int top = getPaddingTop();
