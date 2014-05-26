@@ -6,10 +6,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Join;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.ViewGroup;
 
 public class ListenerView extends ViewGroup{
@@ -26,12 +30,22 @@ public class ListenerView extends ViewGroup{
 	Point b = new Point();
 	Point c = new Point();
 	RectF oval;
+	AccessibilityNodeInfoCompat node;
+	
+	private final Rect mTemp = new Rect();
+    private final Paint mPaint = new Paint();
     
 	public ListenerView(Context context) {
 		super(context);
         paintBlack.setColor(Color.BLACK);
         paintWhite.setColor(Color.WHITE);
         oval = new RectF (50, 40,70,-60);
+        
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setStrokeJoin(Join.ROUND);
+        mPaint.setStrokeWidth(3);
+
+        mPaint.setColor(Color.RED);
        
 		// TODO Auto-generated constructor stub
 	}
@@ -45,6 +59,9 @@ public class ListenerView extends ViewGroup{
 
 		
 		
+	}
+	public void setNode(AccessibilityNodeInfoCompat compn){
+		node=compn;
 	}
 	
 	/*
@@ -215,6 +232,11 @@ public class ListenerView extends ViewGroup{
         tLeft.lineTo(a.x, a.y);
         tLeft.close();
         canvas.drawPath(tLeft, paintBlack);
+        
+        //node.getBoundsInScreen(mTemp);
+	    //canvas.drawRect(mTemp, mPaint);
+	    
+	    //invalidate();
         
         /*
         //Dibuixem el triangle de la dreta (per fer scroll dreta)

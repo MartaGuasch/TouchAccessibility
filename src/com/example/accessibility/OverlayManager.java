@@ -135,15 +135,29 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				destroyOverlayView(mContext);
 				if((x>=right-80)&&(x<=right)&&(y>=bottom/2)&&(y<=bottom/2+80)){
 					Log.i("prints","Scroll right");
+					scroll(true);
+					/*
+					AccessibilityNodeInfoCompat node = findNode();
+					if(node!=null){Log.i("prints", "el node no es null ");}
+					AccessibilityNodeInfoCompat compn=null;
+					while(compn==null){
+						compn = findComponentScrollable(node);
+						if(compn!=null){Log.w("prints","El component es scrollable");}
+					}
+					compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+					*/
 				}
 				if((x>=left)&&(x<=left+80)&&(y>=bottom/2)&&(y<=bottom/2+80)){
 					Log.i("prints","Scroll left");
+					scroll(false);
 				}
 				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=top+30)&&(y<=top+110)){
 					Log.i("prints","Scroll top");
+					scroll(true);
 				}
 				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Scroll down");
+					scroll(false);
 				}
 				if((x>=right-80)&&(x<=right)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Home");
@@ -243,15 +257,19 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         // ////////////////////////////////////////////////////////////////////////////////
        
 
-		AccessibilityNodeInfoCompat node = findNode();
-		if(node!=null){Log.i("prints", "el node no es null ");}
-		AccessibilityNodeInfoCompat compn = findComponentScrollable(node);
-		if(compn!=null){Log.w("prints","El component es scrollable");		}
+		
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
         if ( LV == null ) {
             LV = new ListenerView(this.getApplicationContext());
+            /*AccessibilityNodeInfoCompat node = findNode();
+    		if(node!=null){Log.i("prints", "el node no es null ");}
+    		AccessibilityNodeInfoCompat compn=null;
+    		compn = findComponentScrollable(node);
+    		if(compn!=null){Log.w("prints","El component es scrollable");
+    			LV.setNode(compn);
+    		}*/
             //LV.setTouchable(true);
             LV.setOnTouchListener(this);
         	wm.addView(LV, listenerParams);
@@ -290,6 +308,21 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	}
 	};
 	
+	public void scroll(boolean forward){
+		AccessibilityNodeInfoCompat node = findNode();
+		if(node!=null){Log.i("prints", "el node no es null ");}
+		AccessibilityNodeInfoCompat compn=null;
+		compn = findComponentScrollable(node);
+		if(compn!=null){
+		Log.w("prints","El component es scrollable");
+		boolean t;
+		if (forward){
+			boolean s = compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+		}
+		else
+			t = compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+		}
+	}
 
 	//Touch Overlay Listener 
 	public void click(float x,float y){
@@ -300,8 +333,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		AccessibilityNodeInfoCompat node = findNode();
 		if(node!=null){Log.i("prints", "el node no es null "+posx+"  "+posy);}	
 		AccessibilityNodeInfoCompat comp = findComponentClickable(node,posx, posy);
-		AccessibilityNodeInfoCompat compn = findComponentScrollable(node);
-		if(compn!=null){Log.w("prints","El component es scrollable");		}
+		//AccessibilityNodeInfoCompat compn = findComponentScrollable(node);
+		//if(compn!=null){Log.w("prints","El component es scrollable");		}
 		if (comp != null) {
 			Log.i("prints","injecta click del Overlay");
 				//getListenerView().onDrawNodeBorder();
@@ -350,7 +383,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 						node = findComponentScrollable(root.getChild(i));
 						//count--;
 					}
-					if (node == null && root.getChild(i).isClickable()) {
+					if (node == null && root.getChild(i).isScrollable()) {
 						node = root.getChild(i);
 
 					}
