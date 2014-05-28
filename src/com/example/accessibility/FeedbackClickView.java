@@ -6,9 +6,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Join;
+import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -17,6 +20,11 @@ public class FeedbackClickView extends ViewGroup{
     private RectF oval;
 
     private int posx,posy, deg;
+    
+AccessibilityNodeInfoCompat node=null;
+	boolean nodeNull;
+	private final Rect mTemp = new Rect();
+    private final Paint mPaint = new Paint();
     //private int heightAvailableForCircle;
     //private int widthAvailableForCircle;
     //private int maxRadius;
@@ -29,6 +37,11 @@ public class FeedbackClickView extends ViewGroup{
         paint.setARGB(128,0,255,0);
         paint.setStyle(Style.FILL);
         
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setStrokeJoin(Join.ROUND);
+        mPaint.setStrokeWidth(3);
+
+        mPaint.setColor(Color.RED);
         
         //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         
@@ -46,7 +59,7 @@ public class FeedbackClickView extends ViewGroup{
 	public void onDraw(Canvas canvas){
 		//Log.i("prints","onDraw Feedback");
 		
-		int left = getPaddingLeft();
+		//int left = getPaddingLeft();
         int top = getPaddingTop();
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
@@ -59,6 +72,12 @@ public class FeedbackClickView extends ViewGroup{
         }
 		
         canvas.drawArc(oval, 270, deg, true, paint);
+        
+        if ((node!=null)&&(!nodeNull)){
+        	node.getBoundsInScreen(mTemp);
+        	canvas.drawRect(mTemp, mPaint);
+        }
+        
         invalidate();
     }
 	
@@ -68,6 +87,16 @@ public class FeedbackClickView extends ViewGroup{
 	}
 	void setDeg(int degr){
 		deg=degr;
+	}
+	
+	public void setNode(AccessibilityNodeInfoCompat compn){
+		Log.i("prints"," es fa un set node");
+		node=compn;
+	}
+	public void setNodeNull(boolean esNull){
+		if(esNull) Log.i("prints","El node compn es null");
+		else Log.i("prints", " el node compn NO es null");
+		nodeNull=esNull;
 	}
 
 	/*
