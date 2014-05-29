@@ -43,6 +43,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private int clickTime=2000;
 	private int clickTimeSec=clickTime/20;
 	private int n,i;
+	private String button="clear";
 	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
             AccessibilityService.class, "performGlobalAction", int.class);
 
@@ -101,7 +102,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		
+		Log.i("prints",button);
 		//LV.onDrawNodeBorder(node, "hola");
 		//Log.i("prints","entra onTouch del Overlay");
 		// TODO Auto-generated method stub
@@ -113,6 +114,43 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			int y= (int) event.getY();
 			createFeedbackClickView(mContext);
 			mFCV.setXY(x, y);	
+		}
+		
+		else if((event.getAction()==MotionEvent.ACTION_UP)&&(button.equals("home"))){
+			destroyFeedbackClickView(mContext);
+			createFeedbackClickView(mContext);
+			Log.i("prints","eventUp2");
+			long tsTempUp = event.getEventTime();
+			tsTempUp=tsTempUp-tsTempDown;
+			
+			float x = event.getX();
+			float y = event.getY();
+	        int right =  LV.getWidth() - LV.getPaddingRight();
+	        int bottom = LV.getHeight() - LV.getPaddingBottom();
+			
+			if (tsTempUp>clickTime)
+			{	destroyOverlayView(mContext);
+				if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-170)&&(y<=bottom-10)){
+					Log.i("prints","click");
+					mFCV.setMenuContextual("clear");
+					click(x,y);
+					
+				}
+				else if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-340)&&(y<=bottom-180)){
+					Log.i("prints","GlobalActionHome");
+					performGlobalAction(this,GLOBAL_ACTION_HOME);
+					mFCV.setMenuContextual("clear");
+					mHandler.sendEmptyMessage(0);
+					
+				}
+				else{
+					Log.i("prints","menucontextual fuera");
+					mFCV.setMenuContextual("clear");
+					mHandler.sendEmptyMessage(0);
+				}
+				button="clear";
+				
+			}
 		}
 		
 		else if(event.getAction()==MotionEvent.ACTION_UP){
@@ -173,9 +211,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 						Log.i("prints"," Menu contextual");
 						createFeedbackClickView(mContext);
 						Log.i("prints","createdFeedbackClickView");
-						mFCV.setMenuContextual("home");
+						button="home";
+						mFCV.setMenuContextual(button);
 						Log.i("prints","menu contextual seted");
-					
+					/*
 						if (event.getAction() == MotionEvent.ACTION_DOWN){
 							Log.i("prints","eventDown2");
 							tsTempDown = event.getDownTime();
@@ -200,12 +239,14 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 									}
 									else if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-340)&&(y<=bottom-380)){
 										performGlobalAction(this,GLOBAL_ACTION_HOME);
-										mFCV.setMenuContextual("clear");
+										button="clear";
+										mFCV.setMenuContextual(button);
 										mHandler.sendEmptyMessage(0);
 										
 									}
 									else{
-										mFCV.setMenuContextual("clear");
+										button="clear";
+										mFCV.setMenuContextual(button);
 										mHandler.sendEmptyMessage(0);
 									}
 								}
@@ -224,7 +265,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 								
 								
 							}
-						}
+						}*/
+						mHandler.sendEmptyMessage(0);
 					}
 					else{
 						performGlobalAction(this,GLOBAL_ACTION_HOME);
@@ -245,6 +287,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				
 			}
 		}
+		
+		
+	
 		else{
 			long tsTempMid=event.getEventTime()-tsTempDown;
 			if(tsTempMid<clickTimeSec+n){
@@ -286,10 +331,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         // Create an always on top type of window:
          //  TYPE_SYSTEM_ALERT   = touch events are intercepted
-        feedbackParams.type =  LayoutParams.TYPE_SYSTEM_ALERT;
+        feedbackParams.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_PHONE	| LayoutParams.TYPE_SYSTEM_OVERLAY; 
         
         // The whole screen is covered (including status bar)
-        feedbackParams.flags = LayoutParams.FLAG_LAYOUT_INSET_DECOR | LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+        feedbackParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         // ////////////////////////////////////////////////////////////////////////////////
        
 
