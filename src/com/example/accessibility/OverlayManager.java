@@ -116,15 +116,15 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 		
 		else if(event.getAction()==MotionEvent.ACTION_UP){
-			scroll(true);
+			//scroll(true);
 			destroyFeedbackClickView(mContext);
 			Log.i("prints","eventUp");
 			long tsTempUp = event.getEventTime();
 			tsTempUp=tsTempUp-tsTempDown;
 			//Log.i("prints","temps de click"+tsTempUp);
 			
-			Float x = event.getX();
-			Float y = event.getY();
+			float x = event.getX();
+			float y = event.getY(); 
 			int left = LV.getPaddingLeft();
 	        int top = LV.getPaddingTop();
 	        int right =  LV.getWidth() - LV.getPaddingRight();
@@ -134,9 +134,11 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			if (tsTempUp>clickTime)
 			{
+				//createFeedbackClickView(mContext);
 				//LV.onDrawNodeBorder(node,"green");
 				Log.i("prints","border green");
 				destroyOverlayView(mContext);
+				/*
 				if((x>=right-80)&&(x<=right)&&(y>=bottom/2)&&(y<=bottom/2+80)){
 					Log.i("prints","Scroll right");
 					//scroll(true);
@@ -149,32 +151,97 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 						if(compn!=null){Log.w("prints","El component es scrollable");}
 					}
 					compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
-					*/
+					
 				}
-				if((x>=left)&&(x<=left+80)&&(y>=bottom/2)&&(y<=bottom/2+80)){
+				else if((x>=left)&&(x<=left+80)&&(y>=bottom/2)&&(y<=bottom/2+80)){
 					Log.i("prints","Scroll left");
 					//scroll(false);
 				}
-				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=top+30)&&(y<=top+110)){
+				else if((x>=right/2-40)&&(x<=right/2+40)&&(y>=top+30)&&(y<=top+110)){
 					Log.i("prints","Scroll top");
 					//scroll(false);
 				}
-				if((x>=right/2-40)&&(x<=right/2+40)&&(y>=bottom-90)&&(y<=bottom-10)){
+				else if((x>=right/2-40)&&(x<=right/2+40)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Scroll down");
 					//scroll(true);
-				}
+				}*/
 				if((x>=right-80)&&(x<=right)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Home");
-					performGlobalAction(this,GLOBAL_ACTION_HOME);
+					AccessibilityNodeInfoCompat node = findNode();
+					AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) x, (int) y);
+					if (comp!=null){
+						Log.i("prints"," Menu contextual");
+						createFeedbackClickView(mContext);
+						Log.i("prints","createdFeedbackClickView");
+						mFCV.setMenuContextual("home");
+						Log.i("prints","menu contextual seted");
+					
+						if (event.getAction() == MotionEvent.ACTION_DOWN){
+							Log.i("prints","eventDown2");
+							tsTempDown = event.getDownTime();
+							x= (int) event.getX();
+							y= (int) event.getY();
+							mFCV.setXY((int)x,(int) y);	
+							if(event.getAction()==MotionEvent.ACTION_UP){
+								destroyFeedbackClickView(mContext);
+								Log.i("prints","eventUp2");
+								tsTempUp = event.getEventTime();
+								tsTempUp=tsTempUp-tsTempDown;
+								//Log.i("prints","temps de click"+tsTempUp);
+								
+								x = event.getX();
+								y = event.getY();
+								
+								if (tsTempUp>clickTime)
+								{
+									if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-170)&&(y<=bottom-10)){
+										click(x,y);
+										//mFCV.setMenuContextual("clear");
+									}
+									else if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-340)&&(y<=bottom-380)){
+										performGlobalAction(this,GLOBAL_ACTION_HOME);
+										mFCV.setMenuContextual("clear");
+										mHandler.sendEmptyMessage(0);
+										
+									}
+									else{
+										mFCV.setMenuContextual("clear");
+										mHandler.sendEmptyMessage(0);
+									}
+								}
+							}
+							else{
+								long tsTempMid=event.getEventTime()-tsTempDown;
+								if(tsTempMid<clickTimeSec+n){
+									mFCV.setDeg(18+i);
+								}
+								else{
+									n=n+clickTimeSec;
+									i=i+18;
+								}
+								
+								tsTempMid=event.getEventTime()-tsTempDown;
+								
+								
+							}
+						}
+					}
+					else{
+						performGlobalAction(this,GLOBAL_ACTION_HOME);
+						mHandler.sendEmptyMessage(0);
+					}
 				}
-				if((x>=left)&&(x<=left+80)&&(y>=bottom-90)&&(y<=bottom-10)){
+
+				else if((x>=left)&&(x<=left+80)&&(y>=bottom-90)&&(y<=bottom-10)){
 					Log.i("prints","Back");
 					performGlobalAction(this,GLOBAL_ACTION_BACK);
+					mHandler.sendEmptyMessage(0);
 				}
 				
 				
-				
-				click(x,y);
+				else{
+					click(x,y);
+				}
 				
 			}
 		}

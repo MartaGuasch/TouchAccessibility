@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Paint.Join;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
@@ -23,8 +25,16 @@ public class FeedbackClickView extends ViewGroup{
     
 AccessibilityNodeInfoCompat node=null;
 	boolean nodeNull;
+	String mButton;
 	private final Rect mTemp = new Rect();
     private final Paint mPaint = new Paint();
+    private final Paint mGreen = new Paint();
+    private final Paint mBlack = new Paint();
+    
+    Path path = new Path();
+    Point a = new Point();
+	Point b = new Point();
+	Point c = new Point();
     //private int heightAvailableForCircle;
     //private int widthAvailableForCircle;
     //private int maxRadius;
@@ -40,12 +50,19 @@ AccessibilityNodeInfoCompat node=null;
         mPaint.setStyle(Style.STROKE);
         mPaint.setStrokeJoin(Join.ROUND);
         mPaint.setStrokeWidth(3);
-
         mPaint.setColor(Color.RED);
+        
+        mGreen.setStyle(Style.FILL_AND_STROKE);
+        mGreen.setStrokeWidth(3);
+        mGreen.setColor(Color.GREEN);
+        
+        mBlack.setStyle(Style.FILL_AND_STROKE);
+        mBlack.setStrokeWidth(3);
+        mBlack.setColor(Color.BLACK);
         
         //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         
-        
+        mButton="clear";
         oval = new RectF(50,50,150,150);
         		//(posx+50, posy+50, posx+150, posy+150);
         deg=0;
@@ -77,6 +94,41 @@ AccessibilityNodeInfoCompat node=null;
         	node.getBoundsInScreen(mTemp);
         	canvas.drawRect(mTemp, mPaint);
         }
+        if (mButton.equals("home")){
+        	//Log.i("prints","Boton de home, feedbackclickview");
+        	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mGreen);
+        	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mGreen);
+        	canvas.drawRect(right-230, bottom-200, right-110, bottom-270, mBlack);
+        	a.set(right-230, bottom-270);
+            b.set(right-110, bottom-270);
+            c.set(right-170, bottom-320);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+            
+            a.set(right-230, bottom-150);
+            b.set(right-220, bottom-70);
+            c.set(right-150, bottom-140);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+            
+            a.set(right-230, bottom-150);
+            b.set(right-110, bottom-30);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+        }
+        else if(mButton.equals("clear")){
+        	//Log.i("prints","clear");
+        }
         
         invalidate();
     }
@@ -98,7 +150,11 @@ AccessibilityNodeInfoCompat node=null;
 		else Log.i("prints", " el node compn NO es null");
 		nodeNull=esNull;
 	}
-
+	public void setMenuContextual(String button){
+		Log.i("prints", " el node compn NO es null");
+		mButton=button;
+	}
+	
 	/*
 	private void setRadius(int total, int current){
 
