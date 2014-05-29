@@ -43,6 +43,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private int clickTime=2000;
 	private int clickTimeSec=clickTime/20;
 	private int n,i;
+	private float x,y;
 	private String button="clear";
 	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
             AccessibilityService.class, "performGlobalAction", int.class);
@@ -123,20 +124,20 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			long tsTempUp = event.getEventTime();
 			tsTempUp=tsTempUp-tsTempDown;
 			
-			float x = event.getX();
-			float y = event.getY();
+			float tempx = event.getX();
+			float tempy = event.getY();
 	        int right =  LV.getWidth() - LV.getPaddingRight();
 	        int bottom = LV.getHeight() - LV.getPaddingBottom();
 			
 			if (tsTempUp>clickTime)
 			{	destroyOverlayView(mContext);
-				if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-170)&&(y<=bottom-10)){
+				if ((tempx>=right-250)&&(tempx<=right-90)&&(tempy>=bottom-170)&&(tempy<=bottom-10)){
 					Log.i("prints","click");
 					mFCV.setMenuContextual("clear");
 					click(x,y);
 					
 				}
-				else if ((x>=right-250)&&(x<=right-90)&&(y>=bottom-340)&&(y<=bottom-180)){
+				else if ((tempx>=right-250)&&(tempx<=right-90)&&(tempy>=bottom-340)&&(tempy<=bottom-180)){
 					Log.i("prints","GlobalActionHome");
 					performGlobalAction(this,GLOBAL_ACTION_HOME);
 					mFCV.setMenuContextual("clear");
@@ -161,8 +162,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			tsTempUp=tsTempUp-tsTempDown;
 			//Log.i("prints","temps de click"+tsTempUp);
 			
-			float x = event.getX();
-			float y = event.getY(); 
+			x = event.getX();
+			y = event.getY(); 
 			int left = LV.getPaddingLeft();
 	        int top = LV.getPaddingTop();
 	        int right =  LV.getWidth() - LV.getPaddingRight();
