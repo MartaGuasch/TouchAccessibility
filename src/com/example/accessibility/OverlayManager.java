@@ -4,7 +4,6 @@ package com.example.accessibility;
 import java.lang.reflect.Method;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Instrumentation;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -501,7 +500,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			AccessibilityNodeInfoCompat node = null;
 
 			for (int i = 0; i < root.getChildCount(); i++) {
-				root.getChild(i).getBoundsInScreen(window);
+				//root.getChild(i).getBoundsInScreen(window);
 					if (root.getChild(i).getChildCount() > 0) {
 						//count++;
 						node = findComponentScrollable(root.getChild(i));

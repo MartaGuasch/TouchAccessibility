@@ -81,11 +81,11 @@ AccessibilityNodeInfoCompat node=null;
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
-        if ((posx<=right/2)&&(posy<=bottom/2)){
-        	oval.set(right-150, top+50, right-50, top+150);
+        if (posy<100){
+        	oval.set(getX()-50, getY()+20, getX()+50, getY()+120);
         }
         else{
-        	oval.set(50, 50, 150, 150);
+        	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
         }
 		
         canvas.drawArc(oval, 270, deg, true, paint);
@@ -136,6 +136,13 @@ AccessibilityNodeInfoCompat node=null;
 	void setXY(int x, int y){
 		posx=x;
 		posy=y;
+	}
+	
+	public float getX(){
+		return posx;
+	}
+	public float getY(){
+		return posy;
 	}
 	void setDeg(int degr){
 		deg=degr;
