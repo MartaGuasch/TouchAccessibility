@@ -88,7 +88,7 @@ AccessibilityNodeInfoCompat node=null;
         	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
         }
 		
-        canvas.drawArc(oval, 270, deg, true, paint);
+        canvas.drawArc(oval, 270, getDegr(), true, paint);
         
         if ((node!=null)&&(!nodeNull)){
         	node.getBoundsInScreen(mTemp);
@@ -146,6 +146,9 @@ AccessibilityNodeInfoCompat node=null;
 	}
 	void setDeg(int degr){
 		deg=degr;
+	}
+	public int getDegr(){
+		return deg;
 	}
 	
 	public void setNode(AccessibilityNodeInfoCompat compn){
