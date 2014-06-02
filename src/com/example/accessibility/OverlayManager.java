@@ -42,7 +42,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private long clickTime=2000;
 	private long clickTimeSec=clickTime/20;
 	private int deg=0;
-	private float x,y;
+	private float clickx,clicky;
 	private String button="clear";
 	private boolean timer=false;
 	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
@@ -92,7 +92,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		
-		//Log.i("prints","ontouch");
+		Log.i("prints","on touch "+current_state);
 		stateMachineProcessInput(event);
 		
 		//Log.i("prints",button);
@@ -314,7 +314,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	}
  
 	void createFeedbackClickView(Context context){
-		Log.i("prints","entra createFeedBackClickView del Overlay");
+		//Log.i("prints","entra createFeedBackClickView del Overlay");
 		
 		mContext=context;
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -349,7 +349,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
  
 	void createOverlayView(Context context) {
-		Log.i("prints","entra createOverlayView del Overlay");
+		//Log.i("prints","entra createOverlayView del Overlay");
 	
 		mContext=context;
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -404,7 +404,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    {
 	    	wm.removeViewImmediate(mFCV);
 	    	mFCV = null;
-	    	Log.i("prints","acaba destroyOverlayView");
+	    	Log.i("prints","acaba destroyFeedbackClickView");
 	    }
 	}
 	/* package */ void destroyOverlayView(Context context)
@@ -609,12 +609,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				process_wait(me);
 				break;
 			case WAIT_T1:
-				//Log.i("prints","WAIT_T1");
+				Log.i("prints","WAIT_T1");
 				process_wait_t1(me);
 				//Log.i("prints","endwaitt1");
 				break;
 			case HOME_CONTEXTUAL_MENU:
 				Log.i("prints","HOME_CONTEXTUAL_MENU");
+				//home_contextual_menu(me);
 				break;
 			case BACK_CONTEXTUAL_MENU:
 				Log.i("prints","HOME_CONTEXTUAL_MENU");
@@ -658,7 +659,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			destroyFeedbackClickView(mContext);
 			Log.i("prints","end wait t1");
 		}
-		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)){
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))){
 			Log.i("prints","eventup+click");
 			timer=false;
 			h1.removeMessages(0);
@@ -671,16 +672,106 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			stateMachineProcessInput(me);
 			
 		}
-		/*
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isHomeButton((int) me.getX(), (int) me.getY()))){
-			Log.i("prints","eventup+home");
 			timer=false;
 			h1.removeMessages(0);
-			mFCV.setDeg(0);
+			deg=0;
+			mFCV.setDeg(deg);
 			h2.removeMessages(0);
-			performGlobalAction(this,GLOBAL_ACTION_HOME);
-			current_state = states.WAIT_EVENT;
-		}*/
+			destroyFeedbackClickView(mContext);
+			AccessibilityNodeInfoCompat node = findNode();
+			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			if(comp!=null){
+				button="home";
+				current_state = states.HOME_CONTEXTUAL_MENU;
+				Log.i("prints","menu contextual");
+				clickx=me.getX();
+				clicky=me.getY();
+				stateMachineProcessInput(me);
+				/*
+				if(mFCV!=null){
+					mFCV.setMenuContextual("home");
+				}
+				else{
+					createFeedbackClickView(mContext);
+					mFCV.setMenuContextual("home");
+				}*/
+				
+				/*
+				destroyFeedbackClickView(mContext);
+				destroyOverlayView(mContext);
+				mHandler.sendEmptyMessage(0);
+				h3.sendEmptyMessage(0);
+				h4.sendEmptyMessage(0);*/
+				//stateMachineProcessInput(null);
+			
+			}
+			else{
+				Log.i("prints","actionhome");
+				destroyOverlayView(mContext);
+				performGlobalAction(this,GLOBAL_ACTION_HOME);
+				mHandler.sendEmptyMessage(0);
+				current_state = states.WAIT_EVENT;
+				destroyFeedbackClickView(mContext);
+				//stateMachineProcessInput(me);
+			}
+			
+		}
+	}
+	public void home_contextual_menu (MotionEvent me){
+		if (me==null){
+			Log.i("prints","motionevent null");
+		}
+		else{
+			Log.i("prints","motion event no null");
+			if (me.getAction()==MotionEvent.ACTION_DOWN){
+				//createFeedbackClickView(mContext);
+				Log.i("prints","eventdown");
+				tsTempDown = me.getEventTime();
+				timer=false;
+				h1.sendEmptyMessageDelayed(0,clickTime);
+				h2.sendEmptyMessageDelayed(0, clickTimeSec);
+				if(mFCV!=null){
+					mFCV.setXY((int) me.getX(), (int) me.getY());
+				}
+				else{
+					createFeedbackClickView(mContext);
+					mFCV.setXY((int) me.getX(), (int) me.getY());
+				}
+			}
+			
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMHomeButton((int) me.getX(), (int) me.getY()))){
+				Log.i("prints","actionhome");
+				destroyOverlayView(mContext);
+				performGlobalAction(this,GLOBAL_ACTION_HOME);
+				mHandler.sendEmptyMessage(0);
+				current_state = states.WAIT_EVENT;
+				destroyFeedbackClickView(mContext);
+				stateMachineProcessInput(me);
+			}
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMClick((int) me.getX(), (int) me.getY()))){
+				Log.i("prints","eventup+click");
+				timer=false;
+				h1.removeMessages(0);
+				deg=0;
+				mFCV.setDeg(deg);
+				h2.removeMessages(0);
+				click(clickx,clicky);
+				current_state = states.WAIT_EVENT;
+				destroyFeedbackClickView(mContext);
+				stateMachineProcessInput(me);
+				
+			}
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isCMClick((int) me.getX(), (int) me.getY()))&&(!isCMHomeButton((int) me.getX(), (int) me.getY()))){
+				timer=false;
+				h1.removeMessages(0);
+				deg=0;
+				mFCV.setDeg(deg);
+				h2.removeMessages(0);
+				current_state = states.WAIT_EVENT;
+				destroyFeedbackClickView(mContext);
+			}
+		}
 	}
 
 	private Handler h1 = new Handler() {
@@ -689,7 +780,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     		Log.i("prints","2 seg");
 			timer=true;
 			current_state = states.WAIT_T1;
-    	}
+    	} 
 	};
 	
 	private Handler h2 = new Handler() {
@@ -713,9 +804,35 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	}
 	};
 	
-	
+	private Handler h4 = new Handler() {
+    	@Override
+    	public void handleMessage (Message msg) {  
+    		mFCV.setMenuContextual("home");
+    	}
+	};
 	
 	public boolean isHomeButton(int posx, int posy){
+		int right =  LV.getWidth() - LV.getPaddingRight();
+	    int bottom = LV.getHeight() - LV.getPaddingBottom();
+	    
+		 if ((posx>=right-80)&&(posx<=right)&&(posy>=bottom-90)&&(posy<=bottom-10)){
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+	}
+	public boolean isCMHomeButton(int posx, int posy){
+		int right =  LV.getWidth() - LV.getPaddingRight();
+	    int bottom = LV.getHeight() - LV.getPaddingBottom();
+		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-170)&&(posy<=bottom-10)){
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+	}
+	public boolean isCMClick(int posx, int posy){
 		int right =  LV.getWidth() - LV.getPaddingRight();
 	    int bottom = LV.getHeight() - LV.getPaddingBottom();
 		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-340)&&(posy<=bottom-180)){

@@ -94,7 +94,7 @@ AccessibilityNodeInfoCompat node=null;
         	node.getBoundsInScreen(mTemp);
         	canvas.drawRect(mTemp, mPaint);
         }
-        if (mButton.equals("home")){
+        if (getMenuContextual().equals("home")){
         	//Log.i("prints","Boton de home, feedbackclickview");
         	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mGreen);
         	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mGreen);
@@ -156,13 +156,16 @@ AccessibilityNodeInfoCompat node=null;
 		node=compn;
 	}
 	public void setNodeNull(boolean esNull){
-		if(esNull) Log.i("prints","El node compn es null");
-		else Log.i("prints", " el node compn NO es null");
+		//if(esNull) Log.i("prints","El node compn es null");
+		//else Log.i("prints", " el node compn NO es null");
 		nodeNull=esNull;
 	}
 	public void setMenuContextual(String button){
 		Log.i("prints", " el node compn NO es null");
 		mButton=button;
+	}
+	public String getMenuContextual(){
+		return mButton;
 	}
 	
 	/*
