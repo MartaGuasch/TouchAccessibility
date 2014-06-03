@@ -54,7 +54,7 @@ AccessibilityNodeInfoCompat node=null;
         
         mGreen.setStyle(Style.FILL_AND_STROKE);
         mGreen.setStrokeWidth(3);
-        mGreen.setColor(Color.GREEN);
+        mGreen.setColor(Color.YELLOW);
         
         mBlack.setStyle(Style.FILL_AND_STROKE);
         mBlack.setStrokeWidth(3);
@@ -81,19 +81,7 @@ AccessibilityNodeInfoCompat node=null;
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
-        if (posy<100){
-        	oval.set(getX()-50, getY()+20, getX()+50, getY()+120);
-        }
-        else{
-        	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
-        }
-		
-        canvas.drawArc(oval, 270, getDegr(), true, paint);
         
-        if ((node!=null)&&(!nodeNull)){
-        	node.getBoundsInScreen(mTemp);
-        	canvas.drawRect(mTemp, mPaint);
-        }
         if (getMenuContextual().equals("home")){
         	//Log.i("prints","Boton de home, feedbackclickview");
         	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mGreen);
@@ -130,6 +118,19 @@ AccessibilityNodeInfoCompat node=null;
         	//Log.i("prints","clear");
         }
         
+        if (posy<100){
+        	oval.set(getX()-50, getY()+20, getX()+50, getY()+120);
+        }
+        else{
+        	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
+        }
+		
+        canvas.drawArc(oval, 270, getDegr(), true, paint);
+        
+        if ((node!=null)&&(!nodeNull)){
+        	node.getBoundsInScreen(mTemp);
+        	canvas.drawRect(mTemp, mPaint);
+        }
         invalidate();
     }
 	

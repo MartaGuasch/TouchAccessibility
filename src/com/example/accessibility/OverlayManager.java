@@ -327,7 +327,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         // Create an always on top type of window:
          //  TYPE_SYSTEM_ALERT   = touch events are intercepted
-        feedbackParams.type = LayoutParams.TYPE_SYSTEM_ALERT | LayoutParams.TYPE_PHONE	| LayoutParams.TYPE_SYSTEM_OVERLAY; 
+        feedbackParams.type = LayoutParams.TYPE_PHONE	| LayoutParams.TYPE_SYSTEM_OVERLAY; 
         
         // The whole screen is covered (including status bar)
         feedbackParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
@@ -615,7 +615,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				break;
 			case HOME_CONTEXTUAL_MENU:
 				Log.i("prints","HOME_CONTEXTUAL_MENU");
-				//home_contextual_menu(me);
+				home_contextual_menu(me);
 				break;
 			case BACK_CONTEXTUAL_MENU:
 				Log.i("prints","HOME_CONTEXTUAL_MENU");
@@ -678,16 +678,19 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			deg=0;
 			mFCV.setDeg(deg);
 			h2.removeMessages(0);
-			destroyFeedbackClickView(mContext);
+			//destroyFeedbackClickView(mContext);
 			AccessibilityNodeInfoCompat node = findNode();
 			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
 			if(comp!=null){
 				button="home";
+				mFCV.setMenuContextual(button);
+				destroyFeedbackClickView(mContext);
+				//createFeedbackClickView(mContext);
 				current_state = states.HOME_CONTEXTUAL_MENU;
 				Log.i("prints","menu contextual");
 				clickx=me.getX();
 				clicky=me.getY();
-				stateMachineProcessInput(me);
+				stateMachineProcessInput(null);
 				/*
 				if(mFCV!=null){
 					mFCV.setMenuContextual("home");
@@ -707,68 +710,95 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			}
 			else{
+				destroyFeedbackClickView(mContext);
 				Log.i("prints","actionhome");
 				destroyOverlayView(mContext);
 				performGlobalAction(this,GLOBAL_ACTION_HOME);
 				mHandler.sendEmptyMessage(0);
 				current_state = states.WAIT_EVENT;
 				destroyFeedbackClickView(mContext);
-				//stateMachineProcessInput(me);
 			}
 			
 		}
 	}
 	public void home_contextual_menu (MotionEvent me){
+		
 		if (me==null){
 			Log.i("prints","motionevent null");
+			button="home";
+			if(mFCV!=null){
+				destroyFeedbackClickView(mContext);	
+			}
+			createFeedbackClickView(mContext);
+			mFCV.setMenuContextual(button);
 		}
 		else{
 			Log.i("prints","motion event no null");
 			if (me.getAction()==MotionEvent.ACTION_DOWN){
-				//createFeedbackClickView(mContext);
-				Log.i("prints","eventdown");
+				Log.w("prints","eventdown");
 				tsTempDown = me.getEventTime();
 				timer=false;
-				h1.sendEmptyMessageDelayed(0,clickTime);
+				h4.sendEmptyMessageDelayed(0,clickTime);
 				h2.sendEmptyMessageDelayed(0, clickTimeSec);
-				if(mFCV!=null){
-					mFCV.setXY((int) me.getX(), (int) me.getY());
-				}
+				//if(mFCV!=null){
+				mFCV.setXY((int) me.getX(), (int) me.getY());
+				/*}
 				else{
 					createFeedbackClickView(mContext);
 					mFCV.setXY((int) me.getX(), (int) me.getY());
-				}
+				}*/
+			}
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(!timer)){
+				Log.i("prints","eventup");
+				timer=false;
+				h4.removeMessages(0);
+				deg=0;
+				mFCV.setDeg(deg);
+				h2.removeMessages(0);
+				current_state = states.HOME_CONTEXTUAL_MENU;
 			}
 			
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMHomeButton((int) me.getX(), (int) me.getY()))){
-				Log.i("prints","actionhome");
+				Log.w("prints","HOME");
+				timer=false;
+				h4.removeMessages(0);
+				deg=0;
+				mFCV.setDeg(deg);
+				h2.removeMessages(0);
 				destroyOverlayView(mContext);
 				performGlobalAction(this,GLOBAL_ACTION_HOME);
 				mHandler.sendEmptyMessage(0);
 				current_state = states.WAIT_EVENT;
+				button="clear";
+				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
 				stateMachineProcessInput(me);
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMClick((int) me.getX(), (int) me.getY()))){
-				Log.i("prints","eventup+click");
+				Log.w("prints","click");
 				timer=false;
-				h1.removeMessages(0);
+				h4.removeMessages(0);
 				deg=0;
 				mFCV.setDeg(deg);
 				h2.removeMessages(0);
 				click(clickx,clicky);
 				current_state = states.WAIT_EVENT;
+				button="clear";
+				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
 				stateMachineProcessInput(me);
 				
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isCMClick((int) me.getX(), (int) me.getY()))&&(!isCMHomeButton((int) me.getX(), (int) me.getY()))){
+				Log.w("prints","menu contextual fuera");
 				timer=false;
-				h1.removeMessages(0);
+				h4.removeMessages(0);
 				deg=0;
 				mFCV.setDeg(deg);
 				h2.removeMessages(0);
 				current_state = states.WAIT_EVENT;
+				button="clear";
+				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
 			}
 		}
@@ -807,8 +837,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private Handler h4 = new Handler() {
     	@Override
     	public void handleMessage (Message msg) {  
-    		mFCV.setMenuContextual("home");
-    	}
+    		Log.i("prints","2 seg");
+			timer=true;
+			current_state = states.HOME_CONTEXTUAL_MENU;
+    	} 
 	};
 	
 	public boolean isHomeButton(int posx, int posy){
@@ -822,7 +854,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
-	public boolean isCMHomeButton(int posx, int posy){
+	public boolean isCMClick(int posx, int posy){
 		int right =  LV.getWidth() - LV.getPaddingRight();
 	    int bottom = LV.getHeight() - LV.getPaddingBottom();
 		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-170)&&(posy<=bottom-10)){
@@ -832,7 +864,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
-	public boolean isCMClick(int posx, int posy){
+	public boolean isCMHomeButton(int posx, int posy){
 		int right =  LV.getWidth() - LV.getPaddingRight();
 	    int bottom = LV.getHeight() - LV.getPaddingBottom();
 		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-340)&&(posy<=bottom-180)){
