@@ -6,22 +6,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Join;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.Path.FillType;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.util.Log;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 public class ListenerView extends ViewGroup{
     Path triangle= new Path();
-    Path tLeft= new Path();
-    Path tTop= new Path();
-    Path tBottom= new Path();
     Path path =new Path();
     
     Paint paintBlack = new Paint();
@@ -31,12 +25,9 @@ public class ListenerView extends ViewGroup{
 	Point b = new Point();
 	Point c = new Point();
 	RectF oval;
-	/*
-	AccessibilityNodeInfoCompat node;
 	
-	private final Rect mTemp = new Rect();
-    private final Paint mPaint = new Paint();
-    */
+	AccessibilityNodeInfoCompat node;
+	Rect outBounds = new Rect();
 	
 	public ListenerView(Context context) {
 		super(context);
@@ -87,6 +78,21 @@ public class ListenerView extends ViewGroup{
     @Override
     public void onDraw(Canvas canvas) {
     	
+    	paintWhite.setStrokeWidth(4);
+        paintWhite.setARGB(128,255,255,255);
+        paintWhite.setStyle(Paint.Style.FILL_AND_STROKE);
+        paintWhite.setAntiAlias(true);
+        
+        paintBlack.setStrokeWidth(4);
+        paintBlack.setARGB(128,0,0,0);
+        paintBlack.setStyle(Paint.Style.FILL_AND_STROKE);
+        paintBlack.setAntiAlias(true);
+        
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int right =  getWidth() - getPaddingRight();
+        int bottom = getHeight() - getPaddingBottom();
+        
     	/*
     	final int saveCount = canvas.save();
         canvas.translate(-SCREEN_LOCATION[0], -SCREEN_LOCATION[1]);
@@ -104,35 +110,22 @@ public class ListenerView extends ViewGroup{
    
     	super.onDraw(canvas);
         Paint paint = new Paint();*/
-    	/*mHighlightColor=getHighlightColor();
+    	/*mHighlightColor=getHighlightColor();*/
     	node=getNode();
-    	if (node!=null){Log.i("prints","node no es null");}
-    	Log.i("prints","Color: "+mHighlightColor);
+    	if (node==null){Log.w("prints","scrollable es null");}
     	
-    	if((mHighlightColor==Color.YELLOW)&&(node!=null)){
-    		Log.i("prints","entra condicio x highlight");
-    		onDrawNodeBorder(node,mHighlightColor);
+    	else{
+    		Log.w("prints","es scrollable");
+    		node.getBoundsInScreen(outBounds);
+    		canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
+    		canvas.drawRect(outBounds.left, outBounds.top, outBounds.left+80, outBounds.top+80, paintWhite);
     		
-    	}*/
+    	}
     	
     	
     	/*paint.setColor(android.graphics.Color.BLACK);
         canvas.drawPaint(paint);
         */
-        paintWhite.setStrokeWidth(4);
-        paintWhite.setARGB(128,255,255,255);
-        paintWhite.setStyle(Paint.Style.FILL_AND_STROKE);
-        paintWhite.setAntiAlias(true);
-        
-        paintBlack.setStrokeWidth(4);
-        paintBlack.setARGB(128,0,0,0);
-        paintBlack.setStyle(Paint.Style.FILL_AND_STROKE);
-        paintBlack.setAntiAlias(true);
-        
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
-        int right =  getWidth() - getPaddingRight();
-        int bottom = getHeight() - getPaddingBottom();
         
         
        //canvas.drawLine(left, top, right, bottom, paint);
@@ -146,12 +139,12 @@ public class ListenerView extends ViewGroup{
         a.set(right-70, bottom-55);
         b.set(right-10, bottom-55);
         c.set(right-40, bottom-80);
-        tLeft.moveTo(a.x, a.y);
-        tLeft.lineTo(b.x, b.y);
-        tLeft.lineTo(c.x, c.y);
-        tLeft.lineTo(a.x, a.y);
-        tLeft.close();
-        canvas.drawPath(tLeft, paintBlack);
+        path.moveTo(a.x, a.y);
+        path.lineTo(b.x, b.y);
+        path.lineTo(c.x, c.y);
+        path.lineTo(a.x, a.y);
+        path.close();
+        canvas.drawPath(path, paintBlack);
         
         paintBlack.setStyle(Paint.Style.STROKE);
         canvas.drawRect(left+30, bottom-40, left+60, bottom-40, paintBlack);
@@ -159,7 +152,7 @@ public class ListenerView extends ViewGroup{
         canvas.drawArc(oval, 270, 180, true, paintBlack);
         canvas.drawRect(left+10, bottom-60, left+60, bottom-60, paintBlack);
         //canvas.drawRect(left+10, bottom-70, left+20, bottom-60, paintBlack);
-        //canvas.drawRect(left+10, bottom-60, left+20, bottom-50, paintBlack);
+        //canvas.drawRect(left+10, bottom-60, left+20, bottom-50, paintBlack);			
         a.set(left+20, bottom-50);
         b.set(left+10, bottom-60);
         c.set(left+20, bottom-70);
@@ -175,10 +168,10 @@ public class ListenerView extends ViewGroup{
         //Drawing scroll buttons
         
         //Drawing the squares
-        canvas.drawRect(right-80, bottom/2+80, right, bottom/2, paintWhite);
-        canvas.drawRect(left, bottom/2+80, left+80, bottom/2, paintWhite);
-        canvas.drawRect(right/2-40, bottom-90, right/2+40, bottom-10, paintWhite);
-        canvas.drawRect(right/2-40, top+30, right/2+40, top+110, paintWhite);
+        //canvas.drawRect(right-80, bottom/2+80, right, bottom/2, paintWhite);
+        //canvas.drawRect(left, bottom/2+80, left+80, bottom/2, paintWhite);
+        //canvas.drawRect(right/2-40, bottom-90, right/2+40, bottom-10, paintWhite);
+        //canvas.drawRect(right/2-40, top+30, right/2+40, top+110, paintWhite);
         
         //Drawing triangle (right arrow)
         a.set(right-70, bottom/2+70);
@@ -192,7 +185,7 @@ public class ListenerView extends ViewGroup{
         //tRight.moveTo(cL.x,cL.y);
         triangle.lineTo(a.x, a.y);
         triangle.close();
-        canvas.drawPath(triangle, paintBlack);
+        //canvas.drawPath(triangle, paintBlack);
         
         
         //Drawing triangle (left arrow)
@@ -200,14 +193,14 @@ public class ListenerView extends ViewGroup{
         b.set(left+70, bottom/2+10);
         c.set(left+10, bottom/2+40);
         //tLeft.setFillType(FillType.EVEN_ODD);
-        tLeft.moveTo(a.x, a.y);
-        tLeft.lineTo(b.x, b.y);
+        triangle.moveTo(a.x, a.y);
+        triangle.lineTo(b.x, b.y);
         //tLeft.moveTo(bR.x, bR.y);
-        tLeft.lineTo(c.x, c.y);
+        triangle.lineTo(c.x, c.y);
         //tLeft.moveTo(cR.x, cR.y);
-        tLeft.lineTo(a.x, a.y);
-        tLeft.close();
-        canvas.drawPath(tLeft, paintBlack);
+        triangle.lineTo(a.x, a.y);
+        triangle.close();
+        //canvas.drawPath(triangle, paintBlack);
         
         //Drawing triangle (top arrow)
         a.set(right/2-30, top+100);
@@ -221,21 +214,21 @@ public class ListenerView extends ViewGroup{
         //tRight.moveTo(cT.x,cT.y);
         triangle.lineTo(a.x, a.y);
         triangle.close();
-        canvas.drawPath(triangle, paintBlack);
+        //canvas.drawPath(triangle, paintBlack);
         
         //Drawing triangle (bottom arrow)
         a.set(right/2-30, bottom-80);
         b.set(right/2, bottom-20);
         c.set(right/2+30, bottom-80);
         //tLeft.setFillType(FillType.EVEN_ODD);
-        tLeft.moveTo(a.x, a.y);
-        tLeft.lineTo(b.x, b.y);
+        triangle.moveTo(a.x, a.y);
+        triangle.lineTo(b.x, b.y);
         //tLeft.moveTo(bB.x, bB.y);
-        tLeft.lineTo(c.x, c.y);
+        triangle.lineTo(c.x, c.y);
         //tLeft.moveTo(cB.x, cB.y);
-        tLeft.lineTo(a.x, a.y);
-        tLeft.close();
-        canvas.drawPath(tLeft, paintBlack);
+        triangle.lineTo(a.x, a.y);
+        triangle.close();
+        //canvas.drawPath(triangle, paintBlack);
         
         /*
         if (node!=null){
@@ -310,17 +303,18 @@ public class ListenerView extends ViewGroup{
     public void setHighlightColor(int color) {
     	Log.i("prints","entra setHighlightColor");
         mHighlightColor = color;
-    }
+    }*/
     public void setNode(AccessibilityNodeInfoCompat mnode) {
     	Log.i("prints","entrasetNode");
         node = mnode;
     }
+    /*
     public int getHighlightColor(){
     	return mHighlightColor;
-    }
+    }*/
     public AccessibilityNodeInfoCompat getNode(){
     	return node;
     }
-   */
+   
 
 }

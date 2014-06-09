@@ -18,18 +18,19 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 public class FeedbackClickView extends ViewGroup{
-	private Paint paint = new Paint();
+	
     private RectF oval;
 
     private int posx,posy, deg;
     
-AccessibilityNodeInfoCompat node=null;
-	boolean nodeNull;
+    //AccessibilityNodeInfoCompat node=null;
+	//boolean nodeNull;
 	String mButton;
-	private final Rect mTemp = new Rect();
-    private final Paint mPaint = new Paint();
-    private final Paint mGreen = new Paint();
+	//private final Rect mTemp = new Rect();
+    //private final Paint mPaint = new Paint();
+    private Paint mGreen = new Paint();
     private final Paint mBlack = new Paint();
+    private final Paint mYellow = new Paint();
     
     Path path = new Path();
     Point a = new Point();
@@ -43,18 +44,20 @@ AccessibilityNodeInfoCompat node=null;
     public FeedbackClickView (Context context){
     	
     	super (context);
-    	paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setARGB(128,0,255,0);
-        paint.setStyle(Style.FILL);
+    	mGreen = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mGreen.setARGB(128,0,255,0);
+        mGreen.setStyle(Style.FILL);
         
+        /*
         mPaint.setStyle(Style.STROKE);
         mPaint.setStrokeJoin(Join.ROUND);
         mPaint.setStrokeWidth(3);
         mPaint.setColor(Color.RED);
+        */
         
-        mGreen.setStyle(Style.FILL_AND_STROKE);
-        mGreen.setStrokeWidth(3);
-        mGreen.setColor(Color.YELLOW);
+        mYellow.setStyle(Style.FILL_AND_STROKE);
+        mYellow.setStrokeWidth(3);
+        mYellow.setColor(Color.YELLOW);
         
         mBlack.setStyle(Style.FILL_AND_STROKE);
         mBlack.setStrokeWidth(3);
@@ -77,15 +80,15 @@ AccessibilityNodeInfoCompat node=null;
 		//Log.i("prints","onDraw Feedback");
 		
 		//int left = getPaddingLeft();
-        int top = getPaddingTop();
+        //int top = getPaddingTop();
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
         
         if (getMenuContextual().equals("home")){
         	//Log.i("prints","Boton de home, feedbackclickview");
-        	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mGreen);
-        	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mGreen);
+        	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mYellow);
+        	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mYellow);
         	canvas.drawRect(right-230, bottom-200, right-110, bottom-270, mBlack);
         	a.set(right-230, bottom-270);
             b.set(right-110, bottom-270);
@@ -125,12 +128,12 @@ AccessibilityNodeInfoCompat node=null;
         	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
         }
 		
-        canvas.drawArc(oval, 270, getDegr(), true, paint);
-        
+        canvas.drawArc(oval, 270, getDegr(), true, mGreen);
+        /*
         if ((node!=null)&&(!nodeNull)){
         	node.getBoundsInScreen(mTemp);
         	canvas.drawRect(mTemp, mPaint);
-        }
+        }*/
         invalidate();
     }
 	
@@ -151,7 +154,7 @@ AccessibilityNodeInfoCompat node=null;
 	public int getDegr(){
 		return deg;
 	}
-	
+	/*
 	public void setNode(AccessibilityNodeInfoCompat compn){
 		Log.i("prints"," es fa un set node");
 		node=compn;
@@ -160,7 +163,7 @@ AccessibilityNodeInfoCompat node=null;
 		//if(esNull) Log.i("prints","El node compn es null");
 		//else Log.i("prints", " el node compn NO es null");
 		nodeNull=esNull;
-	}
+	}*/
 	public void setMenuContextual(String button){
 		Log.i("prints", " el node compn NO es null");
 		mButton=button;
