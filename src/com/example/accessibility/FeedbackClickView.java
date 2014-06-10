@@ -115,7 +115,12 @@ public class FeedbackClickView extends ViewGroup{
 	    	else{
 	    		//Log.w("prints","LV: es scrollable");
 	    		scrollableAreas.get(i).getBoundsInScreen(outBounds);
-	    		canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
+	    		if((outBounds.right>right-90)&&(outBounds.bottom>bottom-90)){
+	    			canvas.drawRect(outBounds.right-80, bottom-180, outBounds.right, bottom-100, paintWhite);
+	    		}
+	    		else{
+	    			canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
+	    		}
 	    		canvas.drawRect(outBounds.left, outBounds.top, outBounds.left+80, outBounds.top+80, paintWhite);
 	    		
 	    	}

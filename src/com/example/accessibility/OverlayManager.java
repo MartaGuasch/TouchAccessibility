@@ -67,6 +67,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		Log.i("prints","entra onServiceConnected del Overlay");
 		triggerNotification();
 		createOverlayView(mContext);
+		showScrollButtons();
 		
     }
 	
@@ -83,19 +84,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		
 		// TODO Auto-generated method stub
 		if (event.getEventType() ==  AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED){
-			scrollables.clear();
-			Log.i("prints","Window content changed");
-			AccessibilityNodeInfoCompat node = findNode();
-			if(node!=null){Log.i("prints", "el node x scrollable no es null ");}
-			else {
-				Log.w("prints","el node x scrollable es null");
-			}
-			Log.i("prints",""+scrollables.size());
-	        findComponentScrollable(node);
-	        createFeedbackClickView(mContext);
-	        if (scrollables!=null){
-	        	mFCV.setScrollableAreas(scrollables);
-	        }
+			showScrollButtons();
 	        
 		}
 	}
@@ -688,6 +677,21 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         return current;
     }
+	public void showScrollButtons(){
+		scrollables.clear();
+		Log.i("prints","Window content changed");
+		AccessibilityNodeInfoCompat node = findNode();
+		if(node!=null){Log.i("prints", "el node x scrollable no es null ");}
+		else {
+			Log.w("prints","el node x scrollable es null");
+		}
+		Log.i("prints",""+scrollables.size());
+        findComponentScrollable(node);
+        createFeedbackClickView(mContext);
+        if (scrollables!=null){
+        	mFCV.setScrollableAreas(scrollables);
+        }
+	}
 
 
 	
