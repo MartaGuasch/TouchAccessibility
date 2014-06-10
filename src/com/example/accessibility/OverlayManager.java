@@ -2,6 +2,8 @@ package com.example.accessibility;
 
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
@@ -48,6 +50,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
             AccessibilityService.class, "performGlobalAction", int.class);
 	private states current_state = states.WAIT_EVENT;
+	private List <AccessibilityNodeInfoCompat> scrollables = new ArrayList <AccessibilityNodeInfoCompat> ();
 
     //int right =  LV.getWidth() - LV.getPaddingRight();
     //int bottom = LV.getHeight() - LV.getPaddingBottom();
@@ -77,32 +80,22 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
-		//destroyOverlayView(mContext);
+		
 		// TODO Auto-generated method stub
 		if (event.getEventType() ==  AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED){
-			destroyOverlayView(mContext);
+			scrollables.clear();
 			Log.i("prints","Window content changed");
 			AccessibilityNodeInfoCompat node = findNode();
 			if(node!=null){Log.i("prints", "el node x scrollable no es null ");}
 			else {
 				Log.w("prints","el node x scrollable es null");
 			}
-	        AccessibilityNodeInfoCompat scrollable = findComponentScrollable(node);
-	        if(scrollable==null){
-	        	Log.w("prints","scrollable null");
+			Log.i("prints",""+scrollables.size());
+	        findComponentScrollable(node);
+	        createFeedbackClickView(mContext);
+	        if (scrollables!=null){
+	        	mFCV.setScrollableAreas(scrollables);
 	        }
-	        createOverlayView(mContext);
-	        mLV.setNode(scrollable);
-	        
-	        /*
-	        AccessibilityNodeInfoCompat node = findNode();
-			if(node!=null){Log.i("prints", "el node no es null ");}
-			AccessibilityNodeInfoCompat compn=null;
-			compn = findComponentScrollable(root);
-			if(compn!=null){Log.w("prints","El component es scrollable");}
-			else {
-				compn=null; 
-			*/
 	        
 		}
 	}
@@ -188,7 +181,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         final AccessibilityNodeInfoCompat root = getRoot(cursor);
         //final AccessibilityNodeInfoCompat searched = AccessibilityNodeInfo.searchFromBfs(mContext, root, isScrollable());
 
-        
+        /*
         AccessibilityNodeInfoCompat node = findNode();
 		if(node!=null){Log.i("prints", "el node no es null ");}
 		AccessibilityNodeInfoCompat compn=null;
@@ -198,7 +191,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			compn=null; 
 		
 		}
-		
+		*/
         
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
@@ -246,7 +239,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		AccessibilityNodeInfoCompat node = findNode();
 		if(node!=null){Log.i("prints", "el node no es null ");}
 		AccessibilityNodeInfoCompat compn=null;
-		compn = findComponentScrollable(node);
+		//compn = findComponentScrollable(node);
 		
 		if(compn!=null){
 			Log.w("prints","El component es scrollable");
@@ -304,26 +297,24 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		return node;
 	}
 	
-	private AccessibilityNodeInfoCompat findComponentScrollable(AccessibilityNodeInfoCompat root) {
+	private void findComponentScrollable(AccessibilityNodeInfoCompat root) {
+		//scrollables.clear();
 		try {
 			Log.i("prints","entra findComponentScrollable del Overlay");
 			//AccessibilityNodeInfoCompat node = null;
 			if(root.isScrollable()){
 				Log.w("prints","isScrollable");
-				return root;
+				scrollables.add(root);
+				//return root;
 			}
 
 			for (int i = 0; i < root.getChildCount(); i++) {
 				findComponentScrollable(root.getChild(i));
-					
-
 				}
 
-	
-			return root;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			//return null;
 		}
 		
 }

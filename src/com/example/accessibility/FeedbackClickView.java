@@ -2,6 +2,9 @@ package com.example.accessibility;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,7 +26,10 @@ public class FeedbackClickView extends ViewGroup{
 
     private int posx,posy, deg;
     
-    //AccessibilityNodeInfoCompat node=null;
+    List <AccessibilityNodeInfoCompat> scrollableAreas = new ArrayList <AccessibilityNodeInfoCompat> ();
+    
+    AccessibilityNodeInfoCompat node=null;
+    Rect outBounds = new Rect();
 	//boolean nodeNull;
 	String mButton;
 	//private final Rect mTemp = new Rect();
@@ -31,6 +37,9 @@ public class FeedbackClickView extends ViewGroup{
     private Paint mGreen = new Paint();
     private final Paint mBlack = new Paint();
     private final Paint mYellow = new Paint();
+    
+    Paint paintBlack = new Paint();
+	Paint paintWhite = new Paint();
     
     Path path = new Path();
     Point a = new Point();
@@ -44,6 +53,20 @@ public class FeedbackClickView extends ViewGroup{
     public FeedbackClickView (Context context){
     	
     	super (context);
+    	
+    	paintBlack.setColor(Color.BLACK);
+        paintWhite.setColor(Color.WHITE);
+        
+        paintWhite.setStrokeWidth(4);
+        paintWhite.setARGB(128,255,255,255);
+        paintWhite.setStyle(Paint.Style.FILL_AND_STROKE);
+        paintWhite.setAntiAlias(true);
+        
+        paintBlack.setStrokeWidth(4);
+        paintBlack.setARGB(128,0,0,0);
+        paintBlack.setStyle(Paint.Style.FILL_AND_STROKE);
+        paintBlack.setAntiAlias(true);
+    	
     	mGreen = new Paint(Paint.ANTI_ALIAS_FLAG);
         mGreen.setARGB(128,0,255,0);
         mGreen.setStyle(Style.FILL);
@@ -84,6 +107,20 @@ public class FeedbackClickView extends ViewGroup{
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
+        scrollableAreas=getScrollableAreas();
+        //node=getNode();
+        for (int i=0;i<scrollableAreas.size();i++){
+	    	if (scrollableAreas.get(i)==null){Log.w("prints","LV: scrollable es null");}
+	    	
+	    	else{
+	    		//Log.w("prints","LV: es scrollable");
+	    		scrollableAreas.get(i).getBoundsInScreen(outBounds);
+	    		canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
+	    		canvas.drawRect(outBounds.left, outBounds.top, outBounds.left+80, outBounds.top+80, paintWhite);
+	    		
+	    	}
+        }
+    	
         
         if (getMenuContextual().equals("home")){
         	//Log.i("prints","Boton de home, feedbackclickview");
@@ -171,6 +208,24 @@ public class FeedbackClickView extends ViewGroup{
 	public String getMenuContextual(){
 		return mButton;
 	}
+	public void setNode(AccessibilityNodeInfoCompat mnode) {
+    	Log.i("prints","entrasetNode");
+        node = mnode;
+    }
+  
+    public AccessibilityNodeInfoCompat getNode(){
+    	return node;
+    }
+    public void setScrollableAreas (List <AccessibilityNodeInfoCompat> scrollables){
+    	scrollableAreas.clear();
+    	for (int i=0;i<scrollables.size();i++){
+	        scrollableAreas.add(scrollables.get(i));
+    	}
+    }
+    public List <AccessibilityNodeInfoCompat> getScrollableAreas (){
+    	return scrollableAreas;
+    }
+   
 	
 	/*
 	private void setRadius(int total, int current){

@@ -8,10 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.util.Log;
 import android.view.ViewGroup;
 
 public class ListenerView extends ViewGroup{
@@ -27,7 +25,7 @@ public class ListenerView extends ViewGroup{
 	RectF oval;
 	
 	AccessibilityNodeInfoCompat node;
-	Rect outBounds = new Rect();
+	//Rect outBounds = new Rect();
 	
 	public ListenerView(Context context) {
 		super(context);
@@ -111,16 +109,6 @@ public class ListenerView extends ViewGroup{
     	super.onDraw(canvas);
         Paint paint = new Paint();*/
     	/*mHighlightColor=getHighlightColor();*/
-    	node=getNode();
-    	if (node==null){Log.w("prints","scrollable es null");}
-    	
-    	else{
-    		Log.w("prints","es scrollable");
-    		node.getBoundsInScreen(outBounds);
-    		canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
-    		canvas.drawRect(outBounds.left, outBounds.top, outBounds.left+80, outBounds.top+80, paintWhite);
-    		
-    	}
     	
     	
     	/*paint.setColor(android.graphics.Color.BLACK);
@@ -303,7 +291,7 @@ public class ListenerView extends ViewGroup{
     public void setHighlightColor(int color) {
     	Log.i("prints","entra setHighlightColor");
         mHighlightColor = color;
-    }*/
+    }
     public void setNode(AccessibilityNodeInfoCompat mnode) {
     	Log.i("prints","entrasetNode");
         node = mnode;
@@ -311,10 +299,10 @@ public class ListenerView extends ViewGroup{
     /*
     public int getHighlightColor(){
     	return mHighlightColor;
-    }*/
+    }
     public AccessibilityNodeInfoCompat getNode(){
     	return node;
-    }
+    }*/
    
 
 }
