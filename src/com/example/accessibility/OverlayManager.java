@@ -51,6 +51,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
             AccessibilityService.class, "performGlobalAction", int.class);
 	private states current_state = states.WAIT_EVENT;
 	private List <AccessibilityNodeInfoCompat> scrollables = new ArrayList <AccessibilityNodeInfoCompat> ();
+	private AccessibilityNodeInfoCompat scrollableNode;
 
     //int right =  LV.getWidth() - LV.getPaddingRight();
     //int bottom = LV.getHeight() - LV.getPaddingBottom();
@@ -67,7 +68,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		Log.i("prints","entra onServiceConnected del Overlay");
 		triggerNotification();
 		createOverlayView(mContext);
-		showScrollButtons();
+		//showScrollButtons();
 		
     }
 	
@@ -165,22 +166,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         listenerParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         // ////////////////////////////////////////////////////////////////////////////////
        
-        
-        AccessibilityNodeInfoCompat cursor = getCursor();
-        final AccessibilityNodeInfoCompat root = getRoot(cursor);
-        //final AccessibilityNodeInfoCompat searched = AccessibilityNodeInfo.searchFromBfs(mContext, root, isScrollable());
-
-        /*
-        AccessibilityNodeInfoCompat node = findNode();
-		if(node!=null){Log.i("prints", "el node no es null ");}
-		AccessibilityNodeInfoCompat compn=null;
-		compn = findComponentScrollable(root);
-		if(compn!=null){Log.w("prints","El component es scrollable");}
-		else {
-			compn=null; 
-		
-		}
-		*/
+        showScrollButtons();
         
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
@@ -289,8 +275,6 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private void findComponentScrollable(AccessibilityNodeInfoCompat root) {
 		//scrollables.clear();
 		try {
-			Log.i("prints","entra findComponentScrollable del Overlay");
-			//AccessibilityNodeInfoCompat node = null;
 			if(root.isScrollable()){
 				Log.w("prints","isScrollable");
 				scrollables.add(root);
@@ -407,7 +391,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				home_contextual_menu(me);
 				break;
 			case BACK_CONTEXTUAL_MENU:
-				Log.i("prints","HOME_CONTEXTUAL_MENU");
+				Log.i("prints","BACK_CONTEXTUAL_MENU");
 				break;
 			default:
 				Log.i("prints","Any state");
@@ -447,7 +431,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			destroyFeedbackClickView(mContext);
 			Log.i("prints","end wait t1");
 		}
-		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))){
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))&&(!isScrollForwardButton((int)me.getX(),(int) me.getY()))&&(!isScrollBackwardButton((int)me.getX(),(int) me.getY()))){
 			Log.i("prints","eventup+click");
 			timer=false;
 			h1.removeMessages(0);
@@ -458,8 +442,33 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			current_state = states.WAIT_EVENT;
 			destroyFeedbackClickView(mContext);
 			stateMachineProcessInput(me);
+		}
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isScrollForwardButton((int)me.getX(),(int) me.getY()))){
+			Log.i("prints","eventup+click");
+			timer=false;
+			h1.removeMessages(0);
+			deg=0;
+			mFCV.setDeg(deg);
+			h2.removeMessages(0);
+			scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+			current_state = states.WAIT_EVENT;
+			stateMachineProcessInput(me);
 			
 		}
+		
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isScrollBackwardButton((int)me.getX(),(int) me.getY()))){
+			Log.i("prints","eventup+click");
+			timer=false;
+			h1.removeMessages(0);
+			deg=0;
+			mFCV.setDeg(deg);
+			h2.removeMessages(0);
+			scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+			current_state = states.WAIT_EVENT;
+			stateMachineProcessInput(me);
+			
+		}
+		
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isHomeButton((int) me.getX(), (int) me.getY()))){
 			timer=false;
 			h1.removeMessages(0);
@@ -641,6 +650,45 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
+	public boolean isScrollForwardButton(int posx, int posy){
+
+		int right =  mLV.getWidth() - mLV.getPaddingRight();
+	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
+	    
+		Rect outBounds = new Rect ();
+	    
+	    for(int i=0;i<scrollables.size();i++){
+	    	scrollables.get(i).getBoundsInScreen(outBounds);
+	    	if((outBounds.right>right-90)&&(outBounds.bottom>bottom-90)){
+	    		if((posx>=outBounds.right-80)&&(posx<=outBounds.right)&&(posy>=bottom-180)&&(posy<=bottom-100)){
+	    			scrollableNode=scrollables.get(i);	
+	    			return true;
+	    		}
+	    	}
+       		else{
+				 if ((posx>=outBounds.right-80)&&(posx<=outBounds.right)&&(posy>=outBounds.bottom-80)&&(posy<=outBounds.bottom-10)){
+					 scrollableNode=scrollables.get(i);
+					 return true;
+				 }
+       		}
+	    }
+	    return false;
+	}
+	
+	public boolean isScrollBackwardButton (int posx, int posy){
+	    
+		Rect outBounds = new Rect ();
+	    
+	    for(int i=0;i<scrollables.size();i++){
+	    	scrollables.get(i).getBoundsInScreen(outBounds);
+	    	if ((posx>=outBounds.left)&&(posx<=outBounds.left+80)&&(posy>=outBounds.top)&&(posy<=outBounds.top+80)){
+				scrollableNode=scrollables.get(i);
+				return true;
+			}
+	    }
+	    return false;
+	}
+	
 	public boolean isCMClick(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
