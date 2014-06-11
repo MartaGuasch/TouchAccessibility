@@ -42,19 +42,23 @@ public class FeedbackClickView extends ViewGroup{
 	Paint paintWhite = new Paint();
     
     Path path = new Path();
+    Path path1 = new Path();
     Point a = new Point();
 	Point b = new Point();
 	Point c = new Point();
-    //private int heightAvailableForCircle;
-    //private int widthAvailableForCircle;
-    //private int maxRadius;
-
+	Point d = new Point();
+	Point e = new Point();
+	Point f = new Point();
+	Point g = new Point();
+	Point h = new Point();
+	
+	//boolean scroll=true,contextualMenu=false, feedback=true;
     
     public FeedbackClickView (Context context){
     	
     	super (context);
     	
-    	paintBlack.setColor(Color.BLACK);
+    	//paintBlack.setColor(Color.BLACK);
         paintWhite.setColor(Color.WHITE);
         
         paintWhite.setStrokeWidth(4);
@@ -70,13 +74,6 @@ public class FeedbackClickView extends ViewGroup{
     	mGreen = new Paint(Paint.ANTI_ALIAS_FLAG);
         mGreen.setARGB(128,0,255,0);
         mGreen.setStyle(Style.FILL);
-        
-        /*
-        mPaint.setStyle(Style.STROKE);
-        mPaint.setStrokeJoin(Join.ROUND);
-        mPaint.setStrokeWidth(3);
-        mPaint.setColor(Color.RED);
-        */
         
         mYellow.setStyle(Style.FILL_AND_STROKE);
         mYellow.setStrokeWidth(3);
@@ -100,28 +97,129 @@ public class FeedbackClickView extends ViewGroup{
 	}
 	
 	public void onDraw(Canvas canvas){
-		//Log.i("prints","onDraw Feedback");
 		
-		//int left = getPaddingLeft();
-        //int top = getPaddingTop();
+		
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
         scrollableAreas=getScrollableAreas();
-        //node=getNode();
         for (int i=0;i<scrollableAreas.size();i++){
+        	//scroll=false;
 	    	if (scrollableAreas.get(i)==null){Log.w("prints","LV: scrollable es null");}
 	    	
-	    	else{
-	    		//Log.w("prints","LV: es scrollable");
+	    	else {
+	    		//scroll=false;
 	    		scrollableAreas.get(i).getBoundsInScreen(outBounds);
 	    		if((outBounds.right>right-90)&&(outBounds.bottom>bottom-90)){
 	    			canvas.drawRect(outBounds.right-80, bottom-180, outBounds.right, bottom-100, paintWhite);
+	    			a.set(outBounds.right-50, bottom-130);
+		            b.set(outBounds.right-30, bottom-130);
+		            c.set(outBounds.right-30, bottom-150);
+		            d.set(outBounds.right-10, bottom-140);
+		            e.set(outBounds.right-40, bottom-110);
+		            f.set(outBounds.right-50, bottom-150);
+		            g.set(outBounds.right-40, bottom-170);
+		            h.set(outBounds.right-70, bottom-140);
+		            path1.moveTo(a.x, a.y);
+		            path1.lineTo(f.x, f.y);
+		            path1.moveTo(f.x, f.y);
+		            path1.lineTo(c.x, c.y);
+		            path1.moveTo(c.x, c.y);
+		            path1.lineTo(g.x, g.y);
+		            path1.moveTo(g.x, g.y);
+		            path1.lineTo(f.x, f.y);
+		            path1.moveTo(f.x, f.y);
+		            path1.lineTo(h.x, h.y);
+		            path1.moveTo(h.x, h.y);
+		            path1.lineTo(a.x, a.y);
+		            path1.moveTo(a.x, a.y);
+		            path1.lineTo(b.x, b.y);
+		            path1.lineTo(c.x, c.y);
+		            path1.lineTo(d.x, d.y);
+		            path1.lineTo(b.x, b.y);
+		            path1.lineTo(e.x, e.y);
+		            path1.lineTo(a.x, a.y);
+		            path1.close();
+		            canvas.drawPath(path1, paintBlack);
 	    		}
 	    		else{
 	    			canvas.drawRect(outBounds.right-80, outBounds.bottom-80, outBounds.right, outBounds.bottom, paintWhite);
+	    			a.set(outBounds.right-50, outBounds.bottom-30);
+		            b.set(outBounds.right-30, outBounds.bottom-30);
+		            c.set(outBounds.right-30, outBounds.bottom-50);
+		            d.set(outBounds.right-10, outBounds.bottom-40);
+		            e.set(outBounds.right-40, outBounds.bottom-10);
+		            f.set(outBounds.right-50, outBounds.bottom-50);
+		            g.set(outBounds.right-40, outBounds.bottom-70);
+		            h.set(outBounds.right-70, outBounds.bottom-40);
+		            path1.moveTo(a.x, a.y);
+		            path1.lineTo(f.x, f.y);
+		            path1.moveTo(f.x, f.y);
+		            path1.lineTo(c.x, c.y);
+		            path1.moveTo(c.x, c.y);
+		            path1.lineTo(g.x, g.y);
+		            path1.moveTo(g.x, g.y);
+		            path1.lineTo(f.x, f.y);
+		            path1.moveTo(f.x, f.y);
+		            path1.lineTo(h.x, h.y);
+		            path1.moveTo(h.x, h.y);
+		            path1.lineTo(a.x, a.y);
+		            path1.moveTo(a.x, a.y);
+		            path1.lineTo(b.x, b.y);
+		            path1.lineTo(c.x, c.y);
+		            path1.lineTo(d.x, d.y);
+		            path1.lineTo(b.x, b.y);
+		            path1.lineTo(e.x, e.y);
+		            path1.lineTo(a.x, a.y);
+		            path1.close();
+		            canvas.drawPath(path1, paintBlack);
 	    		}
 	    		canvas.drawRect(outBounds.left, outBounds.top, outBounds.left+80, outBounds.top+80, paintWhite);
+	    		a.set(outBounds.left+30, outBounds.top+50);
+	            b.set(outBounds.left+50, outBounds.top+50);
+	            c.set(outBounds.left+50, outBounds.top+30);
+	            d.set(outBounds.left+70, outBounds.top+40);
+	            e.set(outBounds.left+40, outBounds.top+70);
+	            f.set(outBounds.left+30, outBounds.top+30);
+	            g.set(outBounds.left+40, outBounds.top+10);
+	            h.set(outBounds.left+10, outBounds.top+40);
+	            path.moveTo(a.x, a.y);
+	            path.lineTo(b.x, b.y);
+	            path.moveTo(b.x, b.y);
+	            path.lineTo(c.x, c.y);
+	            path.moveTo(c.x, c.y);
+	            path.lineTo(d.x, d.y);
+	            path.moveTo(d.x, d.y);
+	            path.lineTo(b.x, b.y);
+	            path.moveTo(b.x, b.y);
+	            path.lineTo(e.x, e.y);
+	            path.moveTo(e.x, e.y);
+	            path.lineTo(a.x, a.y);
+	            path.moveTo(a.x, a.y);
+	            path.lineTo(f.x, f.y);
+	            path.lineTo(c.x, c.y);
+	            path.lineTo(g.x, g.y);
+	            path.lineTo(f.x, f.y);
+	            path.lineTo(h.x, h.y);
+	            path.lineTo(a.x, a.y);
+	            path.close();
+	            canvas.drawPath(path, paintBlack);
+	            
+	            /*
+	            a.set(outBounds.left+30, outBounds.top+50);
+	            b.set(outBounds.left+30, outBounds.top+30);
+	            c.set(outBounds.left+50, outBounds.top+30);
+	            d.set(outBounds.left+40, outBounds.top+10);
+	            e.set(outBounds.left+10, outBounds.top+40);
+	            path1.moveTo(a.x, a.y);
+	            path1.lineTo(b.x, b.y);
+	            path1.lineTo(c.x, c.y);
+	            path1.lineTo(d.x, d.y);
+	            path1.lineTo(b.x, b.y);
+	            path1.lineTo(e.x, e.y);
+	            path1.lineTo(a.x, a.y);
+	            path1.close();
+	            canvas.drawPath(path1, paintBlack);*/
 	    		
 	    	}
         }
@@ -129,6 +227,7 @@ public class FeedbackClickView extends ViewGroup{
         
         if (getMenuContextual().equals("home")){
         	//Log.i("prints","Boton de home, feedbackclickview");
+        	//contextualMenu=false;
         	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mYellow);
         	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mYellow);
         	canvas.drawRect(right-230, bottom-200, right-110, bottom-270, mBlack);
@@ -170,13 +269,17 @@ public class FeedbackClickView extends ViewGroup{
         	oval.set(getX()-50, getY()-120, getX()+50, getY()-20);
         }
 		
-        canvas.drawArc(oval, 270, getDegr(), true, mGreen);
+		canvas.drawArc(oval, 270, getDegr(), true, mGreen);
+		//feedback=false;
         /*
         if ((node!=null)&&(!nodeNull)){
         	node.getBoundsInScreen(mTemp);
         	canvas.drawRect(mTemp, mPaint);
         }*/
-        invalidate();
+        
+        //if ((scroll)||(feedback)||(contextualMenu)){
+        	invalidate();
+        //}
     }
 	
 	void setXY(int x, int y){
@@ -191,6 +294,7 @@ public class FeedbackClickView extends ViewGroup{
 		return posy;
 	}
 	void setDeg(int degr){
+		//feedback=true;
 		deg=degr;
 	}
 	public int getDegr(){
@@ -208,6 +312,7 @@ public class FeedbackClickView extends ViewGroup{
 	}*/
 	public void setMenuContextual(String button){
 		Log.i("prints", " el node compn NO es null");
+		//contextualMenu=true;
 		mButton=button;
 	}
 	public String getMenuContextual(){
@@ -222,6 +327,7 @@ public class FeedbackClickView extends ViewGroup{
     	return node;
     }
     public void setScrollableAreas (List <AccessibilityNodeInfoCompat> scrollables){
+    	//scroll=true;
     	scrollableAreas.clear();
     	for (int i=0;i<scrollables.size();i++){
 	        scrollableAreas.add(scrollables.get(i));
@@ -232,62 +338,6 @@ public class FeedbackClickView extends ViewGroup{
     }
    
 	
-	/*
-	private void setRadius(int total, int current){
-
-        System.out.println("total: "+total);
-        System.out.println("current: "+current);
-        this.radius = ( ( (getMaxRadius()/2) * current) / 100);
-        System.out.println("radius: "+this.radius);
-    }
-    private void setMaxRadius(int h, int w){
-
-        this.maxRadius = h < w ? h/2 : w/2 ;
-    }
-    private int getMaxRadius(){
-
-        return this.maxRadius;
-    }
-    private void setWidth(int w){
-
-        this.width = w;
-    }
-
-    private void setHeight(int h){
-
-        this.height = h;
-    }
-
-    private int getViewWidth(){
-
-        return this.width;
-    }
-
-    private int getViewHeight() {
-
-        return this.height;
-    }
-
-    private void setHeightAvailableForCircle(int availableHeightForCircle){
-
-        this.heightAvailableForCircle = availableHeightForCircle;
-    }
-    private int getAvailableHeightForCircle(){
-
-        return this.heightAvailableForCircle;
-    }
-
-    private void setWidthAvailableForCircle(int wid){
-
-        this.widthAvailableForCircle = wid;
-    }
-
-    private int getWidthAvailableForCircle(){
-
-        return this.widthAvailableForCircle;
-    }
-	*/
-
-
+	
 }
 

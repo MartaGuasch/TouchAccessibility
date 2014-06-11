@@ -85,6 +85,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		
 		// TODO Auto-generated method stub
 		if (event.getEventType() ==  AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED){
+			if(mFCV!=null){
+				destroyFeedbackClickView(mContext);
+			}
 			showScrollButtons();
 	        
 		}
@@ -210,28 +213,6 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	}
 	};
 	
-	public void scroll(boolean forward){
-		AccessibilityNodeInfoCompat node = findNode();
-		if(node!=null){Log.i("prints", "el node no es null ");}
-		AccessibilityNodeInfoCompat compn=null;
-		//compn = findComponentScrollable(node);
-		
-		if(compn!=null){
-			Log.w("prints","El component es scrollable");
-			//mFCV.setNodeNull(false);
-			//mFCV.setNode(compn);
-			/*boolean t;
-			if (forward){
-				boolean s = compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
-			}
-			else
-				t = compn.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);*/
-		}
-		else {
-			//mFCV.setNodeNull(true);
-		}
-		//mHandler.sendEmptyMessage(0);
-	}
 
 	//Touch Overlay Listener 
 	public void click(float x,float y){
