@@ -108,7 +108,6 @@ public class FeedbackClickView extends ViewGroup{
 	    	if (scrollableAreas.get(i)==null){Log.w("prints","LV: scrollable es null");}
 	    	
 	    	else {
-	    		//scroll=false;
 	    		scrollableAreas.get(i).getBoundsInScreen(outBounds);
 	    		if((outBounds.right>right-90)&&(outBounds.bottom>bottom-90)){
 	    			canvas.drawRect(outBounds.right-80, bottom-180, outBounds.right, bottom-100, paintWhite);
@@ -278,7 +277,7 @@ public class FeedbackClickView extends ViewGroup{
         }*/
         
         //if ((scroll)||(feedback)||(contextualMenu)){
-        	invalidate();
+        //invalidate();
         //}
     }
 	
@@ -295,6 +294,7 @@ public class FeedbackClickView extends ViewGroup{
 	}
 	void setDeg(int degr){
 		//feedback=true;
+		invalidate();
 		deg=degr;
 	}
 	public int getDegr(){
@@ -312,6 +312,7 @@ public class FeedbackClickView extends ViewGroup{
 	}*/
 	public void setMenuContextual(String button){
 		Log.i("prints", " el node compn NO es null");
+		invalidate();
 		//contextualMenu=true;
 		mButton=button;
 	}
@@ -328,6 +329,7 @@ public class FeedbackClickView extends ViewGroup{
     }
     public void setScrollableAreas (List <AccessibilityNodeInfoCompat> scrollables){
     	//scroll=true;
+    	invalidate();
     	scrollableAreas.clear();
     	for (int i=0;i<scrollables.size();i++){
 	        scrollableAreas.add(scrollables.get(i));
