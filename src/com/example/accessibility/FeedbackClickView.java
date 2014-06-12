@@ -203,36 +203,18 @@ public class FeedbackClickView extends ViewGroup{
 	            path.lineTo(a.x, a.y);
 	            path.close();
 	            canvas.drawPath(path, paintBlack);
-	            
-	            /*
-	            a.set(outBounds.left+30, outBounds.top+50);
-	            b.set(outBounds.left+30, outBounds.top+30);
-	            c.set(outBounds.left+50, outBounds.top+30);
-	            d.set(outBounds.left+40, outBounds.top+10);
-	            e.set(outBounds.left+10, outBounds.top+40);
-	            path1.moveTo(a.x, a.y);
-	            path1.lineTo(b.x, b.y);
-	            path1.lineTo(c.x, c.y);
-	            path1.lineTo(d.x, d.y);
-	            path1.lineTo(b.x, b.y);
-	            path1.lineTo(e.x, e.y);
-	            path1.lineTo(a.x, a.y);
-	            path1.close();
-	            canvas.drawPath(path1, paintBlack);*/
 	    		
 	    	}
         }
     	
         
         if (getMenuContextual().equals("home")){
-        	//Log.i("prints","Boton de home, feedbackclickview");
-        	//contextualMenu=false;
-        	canvas.drawRect(right-250, bottom-170, right-90, bottom-10, mYellow);
-        	canvas.drawRect(right-250, bottom-180, right-90, bottom-340, mYellow);
-        	canvas.drawRect(right-230, bottom-200, right-110, bottom-270, mBlack);
-        	a.set(right-230, bottom-270);
-            b.set(right-110, bottom-270);
-            c.set(right-170, bottom-320);
+        	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
+        	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
+        	canvas.drawRect(right/2-90, bottom/2-130, right/2+90, bottom/2-50, mBlack);
+        	a.set(right/2-90, bottom/2-130);
+            b.set(right/2+90, bottom/2-130);
+            c.set(right/2, bottom/2-230);
             path.moveTo(a.x, a.y);
             path.lineTo(b.x, b.y);
             path.lineTo(c.x, c.y);
@@ -240,9 +222,9 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, mBlack);
             
-            a.set(right-230, bottom-150);
-            b.set(right-220, bottom-70);
-            c.set(right-150, bottom-140);
+        	a.set(right/2-90, bottom/2+50);
+            b.set(right/2-75, bottom/2+170);
+            c.set(right/2+30, bottom/2+65);
             path.moveTo(a.x, a.y);
             path.lineTo(b.x, b.y);
             path.lineTo(c.x, c.y);
@@ -250,13 +232,157 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, mBlack);
             
-            a.set(right-230, bottom-150);
-            b.set(right-110, bottom-30);
+            a.set(right/2-30, bottom/2+110);
+            b.set(right/2+90, bottom/2+230);
             path.moveTo(a.x, a.y);
             path.lineTo(b.x, b.y);
             path.close();
-            canvas.drawPath(path, mBlack);
+            canvas.drawPath(path, mBlack);	
         }
+        if (getMenuContextual().equals("scrollbackward")){
+        	Log.i("prints","scroll backward contextual menu");
+        	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
+        	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
+        	
+    		a.set(right/2-30,bottom/2-110);
+            b.set(right/2+30, bottom/2-110);
+            c.set(right/2+30, bottom/2-170);
+            d.set(right/2+90, bottom/2-140);
+            e.set(right/2, bottom/2-50);
+            f.set(right/2-30, bottom/2-170);
+            g.set(right/2, bottom/2-230);
+            h.set(right/2-90, bottom/2-140);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.moveTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.moveTo(c.x, c.y);
+            path.lineTo(d.x, d.y);
+            path.moveTo(d.x, d.y);
+            path.lineTo(b.x, b.y);
+            path.moveTo(b.x, b.y);
+            path.lineTo(e.x, e.y);
+            path.moveTo(e.x, e.y);
+            path.lineTo(a.x, a.y);
+            path.moveTo(a.x, a.y);
+            path.lineTo(f.x, f.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(g.x, g.y);
+            path.lineTo(f.x, f.y);
+            path.lineTo(h.x, h.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, paintBlack);
+            
+        	a.set(right/2-90, bottom/2+50);
+            b.set(right/2-75, bottom/2+170);
+            c.set(right/2+30, bottom/2+65);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+            
+            a.set(right/2-30, bottom/2+110);
+            b.set(right/2+90, bottom/2+230);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.close();
+            canvas.drawPath(path, mBlack);	
+        	
+        }
+        if (getMenuContextual().equals("scrollforward")){
+        	Log.i("prints","scroll backward contextual menu");
+        	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
+        	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
+        	
+    		a.set(right/2-30,bottom/2-110);
+            b.set(right/2+30, bottom/2-110);
+            c.set(right/2+30, bottom/2-170);
+            d.set(right/2+90, bottom/2-140);
+            e.set(right/2, bottom/2-50);
+            f.set(right/2-30, bottom/2-170);
+            g.set(right/2, bottom/2-230);
+            h.set(right/2-90, bottom/2-140);
+            path.moveTo(a.x, a.y);
+            path.lineTo(f.x, f.y);
+            path.moveTo(f.x, f.y);
+            path.lineTo(c.x, c.y);
+            path.moveTo(c.x, c.y);
+            path.lineTo(g.x, g.y);
+            path.moveTo(g.x, g.y);
+            path.lineTo(f.x, f.y);
+            path.moveTo(f.x, f.y);
+            path.lineTo(h.x, h.y);
+            path.moveTo(h.x, h.y);
+            path.lineTo(a.x, a.y);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(d.x, d.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(e.x, e.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, paintBlack);
+            
+        	a.set(right/2-90, bottom/2+50);
+            b.set(right/2-75, bottom/2+170);
+            c.set(right/2+30, bottom/2+65);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+            
+            a.set(right/2-30, bottom/2+110);
+            b.set(right/2+90, bottom/2+230);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.close();
+            canvas.drawPath(path, mBlack);	
+        	
+        }
+        if (getMenuContextual().equals("back")){
+        	Log.i("prints","scroll backward contextual menu");
+        	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
+        	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
+        	paintBlack.setStyle(Paint.Style.STROKE);
+        	
+        	canvas.drawRect(right/2-30, bottom/2-110, right/2+60, bottom/2-110, paintBlack);
+            oval.set(right/2+30, bottom/2-170, right/2+90,bottom/2-110);
+            canvas.drawArc(oval, 270, 180, true, paintBlack);
+            canvas.drawRect(right/2-90, bottom/2-170, right/2+60, bottom/2-170, paintBlack);		
+            a.set(right/2-60, bottom/2-140);
+            b.set(right/2-90, bottom/2-170);
+            c.set(right/2-60, bottom/2-200);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.moveTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            canvas.drawPath(path, paintBlack);
+            
+        	a.set(right/2-90, bottom/2+50);
+            b.set(right/2-75, bottom/2+170);
+            c.set(right/2+30, bottom/2+65);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.lineTo(c.x, c.y);
+            path.lineTo(a.x, a.y);
+            path.close();
+            canvas.drawPath(path, mBlack);
+            
+            a.set(right/2-30, bottom/2+110);
+            b.set(right/2+90, bottom/2+230);
+            path.moveTo(a.x, a.y);
+            path.lineTo(b.x, b.y);
+            path.close();
+            canvas.drawPath(path, mBlack);	
+        	
+        }
+        
         else if(mButton.equals("clear")){
         	//Log.i("prints","clear");
         }

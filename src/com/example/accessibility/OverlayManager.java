@@ -59,8 +59,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	public enum states{
 		WAIT_EVENT,
 		WAIT_T1,
-		HOME_CONTEXTUAL_MENU,
-		BACK_CONTEXTUAL_MENU
+		CONTEXTUAL_MENU
 	}
 	
 	@Override
@@ -367,12 +366,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				process_wait_t1(me);
 				//Log.i("prints","endwaitt1");
 				break;
-			case HOME_CONTEXTUAL_MENU:
+			case CONTEXTUAL_MENU:
 				Log.i("prints","HOME_CONTEXTUAL_MENU");
-				home_contextual_menu(me);
-				break;
-			case BACK_CONTEXTUAL_MENU:
-				Log.i("prints","BACK_CONTEXTUAL_MENU");
+				contextual_menu(me);
 				break;
 			default:
 				Log.i("prints","Any state");
@@ -412,7 +408,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			//destroyFeedbackClickView(mContext);
 			Log.i("prints","end wait t1");
 		}
-		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))&&(!isScrollForwardButton((int)me.getX(),(int) me.getY()))&&(!isScrollBackwardButton((int)me.getX(),(int) me.getY()))){
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))&&(!isScrollForwardButton((int)me.getX(),(int) me.getY()))&&(!isScrollBackwardButton((int)me.getX(),(int) me.getY()))&&(!isBackButton((int)me.getX(),(int) me.getY()))){
 			Log.i("prints","eventup+click");
 			timer=false;
 			h1.removeMessages(0);
@@ -431,9 +427,27 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			deg=0;
 			mFCV.setDeg(deg);
 			h2.removeMessages(0);
-			scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
-			current_state = states.WAIT_EVENT;
-			stateMachineProcessInput(me);
+			AccessibilityNodeInfoCompat node = findNode();
+			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			
+			if(comp!=null){
+				button="scrollforward";
+				mFCV.setMenuContextual(button);
+				destroyFeedbackClickView(mContext);
+				createFeedbackClickView(mContext);
+				current_state = states.CONTEXTUAL_MENU;
+				Log.i("prints","menu contextual");
+				clickx=me.getX();
+				clicky=me.getY();
+				stateMachineProcessInput(null);
+				
+			
+			}
+			else{
+				scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+				current_state = states.WAIT_EVENT;
+				stateMachineProcessInput(me);
+			}
 			
 		}
 		
@@ -444,12 +458,64 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			deg=0;
 			mFCV.setDeg(deg);
 			h2.removeMessages(0);
-			scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
-			current_state = states.WAIT_EVENT;
-			stateMachineProcessInput(me);
+			AccessibilityNodeInfoCompat node = findNode();
+			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			
+			if(comp!=null){
+				button="scrollbackward";
+				mFCV.setMenuContextual(button);
+				destroyFeedbackClickView(mContext);
+				createFeedbackClickView(mContext);
+				current_state = states.CONTEXTUAL_MENU;
+				Log.i("prints","menu contextual");
+				clickx=me.getX();
+				clicky=me.getY();
+				stateMachineProcessInput(null);
+				
+			
+			}
+			else{
+				scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+				current_state = states.WAIT_EVENT;
+				stateMachineProcessInput(me);
+			}
+			
 			
 		}
 		
+		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isBackButton((int) me.getX(), (int) me.getY()))){
+			timer=false;
+			h1.removeMessages(0);
+			deg=0;
+			mFCV.setDeg(deg);
+			h2.removeMessages(0);
+			//destroyFeedbackClickView(mContext);
+			AccessibilityNodeInfoCompat node = findNode();
+			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			if(comp!=null){
+				button="back";
+				mFCV.setMenuContextual(button);
+				destroyFeedbackClickView(mContext);
+				current_state = states.CONTEXTUAL_MENU;
+				Log.i("prints","menu contextual");
+				clickx=me.getX();
+				clicky=me.getY();
+				stateMachineProcessInput(null);
+				
+			
+			}
+			
+			else{
+				destroyFeedbackClickView(mContext);
+				Log.i("prints","actionhome");
+				destroyOverlayView(mContext);
+				performGlobalAction(this,GLOBAL_ACTION_BACK);
+				mHandler.sendEmptyMessage(0);
+				current_state = states.WAIT_EVENT;
+				destroyFeedbackClickView(mContext);
+			}
+			
+		}
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isHomeButton((int) me.getX(), (int) me.getY()))){
 			timer=false;
 			h1.removeMessages(0);
@@ -464,29 +530,15 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
 				//createFeedbackClickView(mContext);
-				current_state = states.HOME_CONTEXTUAL_MENU;
+				current_state = states.CONTEXTUAL_MENU;
 				Log.i("prints","menu contextual");
 				clickx=me.getX();
 				clicky=me.getY();
 				stateMachineProcessInput(null);
-				/*
-				if(mFCV!=null){
-					mFCV.setMenuContextual("home");
-				}
-				else{
-					createFeedbackClickView(mContext);
-					mFCV.setMenuContextual("home");
-				}*/
 				
-				/*
-				destroyFeedbackClickView(mContext);
-				destroyOverlayView(mContext);
-				mHandler.sendEmptyMessage(0);
-				h3.sendEmptyMessage(0);
-				h4.sendEmptyMessage(0);*/
-				//stateMachineProcessInput(null);
 			
 			}
+			
 			else{
 				destroyFeedbackClickView(mContext);
 				Log.i("prints","actionhome");
@@ -498,12 +550,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			}
 			
 		}
+		
 	}
-	public void home_contextual_menu (MotionEvent me){
+	public void contextual_menu (MotionEvent me){
 		
 		if (me==null){
 			Log.i("prints","motionevent null");
-			button="home";
+			button=getButton();
 			if(mFCV!=null){
 				destroyFeedbackClickView(mContext);	
 			}
@@ -519,11 +572,6 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				h2.sendEmptyMessageDelayed(0, clickTimeSec);
 				//if(mFCV!=null){
 				mFCV.setXY((int) me.getX(), (int) me.getY());
-				/*}
-				else{
-					createFeedbackClickView(mContext);
-					mFCV.setXY((int) me.getX(), (int) me.getY());
-				}*/
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(!timer)){
 				Log.i("prints","eventup");
@@ -532,10 +580,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				deg=0;
 				mFCV.setDeg(deg);
 				h2.removeMessages(0);
-				current_state = states.HOME_CONTEXTUAL_MENU;
+				current_state = states.CONTEXTUAL_MENU;
 			}
 			
-			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMHomeButton((int) me.getX(), (int) me.getY()))){
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMGlobalOrScrollButton((int) me.getX(), (int) me.getY()))){
 				Log.w("prints","HOME");
 				timer=false;
 				h4.removeMessages(0);
@@ -543,7 +591,20 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				mFCV.setDeg(deg);
 				h2.removeMessages(0);
 				destroyOverlayView(mContext);
-				performGlobalAction(this,GLOBAL_ACTION_HOME);
+				if(getButton().equals("home")){
+					performGlobalAction(this,GLOBAL_ACTION_HOME);
+				}
+				if(getButton().equals("back")){
+					performGlobalAction(this,GLOBAL_ACTION_BACK);
+				}
+				if(getButton().equals("scrollbackward")){
+					scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+				}
+				if(getButton().equals("scrollforward")){
+					scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+				}
+				
+				
 				mHandler.sendEmptyMessage(0);
 				current_state = states.WAIT_EVENT;
 				button="clear";
@@ -566,7 +627,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				stateMachineProcessInput(me);
 				
 			}
-			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isCMClick((int) me.getX(), (int) me.getY()))&&(!isCMHomeButton((int) me.getX(), (int) me.getY()))){
+			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isCMClick((int) me.getX(), (int) me.getY()))&&(!isCMGlobalOrScrollButton((int) me.getX(), (int) me.getY()))){
 				Log.w("prints","menu contextual fuera");
 				timer=false;
 				h4.removeMessages(0);
@@ -616,7 +677,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	public void handleMessage (Message msg) {  
     		Log.i("prints","2 seg");
 			timer=true;
-			current_state = states.HOME_CONTEXTUAL_MENU;
+			current_state = states.CONTEXTUAL_MENU;
     	} 
 	};
 	
@@ -631,6 +692,19 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
+	public boolean isBackButton(int posx, int posy){
+		Log.e("prints","Bb");
+		int left =  mLV.getPaddingLeft();
+	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
+	    
+		 if ((posx>=left)&&(posx<=left+80)&&(posy>=bottom-90)&&(posy<=bottom-10)){
+			 return true;
+		 }
+		 else{
+			 return false;
+		 }
+	}
+	
 	public boolean isScrollForwardButton(int posx, int posy){
 
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
@@ -673,17 +747,17 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	public boolean isCMClick(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
-		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-170)&&(posy<=bottom-10)){
+		 if ((posx>=right/2-120)&&(posx<=right/2+120)&&(posy>=bottom/2+20)&&(posy<=bottom/2+260)){
 			 return true;
 		 }
 		 else{
 			 return false;
 		 }
 	}
-	public boolean isCMHomeButton(int posx, int posy){
+	public boolean isCMGlobalOrScrollButton(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
-		 if ((posx>=right-250)&&(posx<=right-90)&&(posy>=bottom-340)&&(posy<=bottom-180)){
+		 if ((posx>=right/2-120)&&(posx<=right/2+120)&&(posy>=bottom/2-260)&&(posy<=bottom/2-20)){
 			 return true;
 		 }
 		 else{
@@ -720,6 +794,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         if (scrollables!=null){
         	mFCV.setScrollableAreas(scrollables);
         }
+	}
+	public String getButton (){
+		return button;
 	}
 
 
