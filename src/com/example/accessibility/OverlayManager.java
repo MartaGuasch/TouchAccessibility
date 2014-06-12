@@ -409,7 +409,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			mFCV.setDeg(deg);
 			h2.removeMessages(0);
 			current_state = states.WAIT_EVENT;
-			destroyFeedbackClickView(mContext);
+			//destroyFeedbackClickView(mContext);
 			Log.i("prints","end wait t1");
 		}
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))&&(!isScrollForwardButton((int)me.getX(),(int) me.getY()))&&(!isScrollBackwardButton((int)me.getX(),(int) me.getY()))){
