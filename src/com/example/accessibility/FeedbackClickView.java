@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.Paint.Join;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
@@ -30,10 +29,7 @@ public class FeedbackClickView extends ViewGroup{
     
     AccessibilityNodeInfoCompat node=null;
     Rect outBounds = new Rect();
-	//boolean nodeNull;
 	String mButton;
-	//private final Rect mTemp = new Rect();
-    //private final Paint mPaint = new Paint();
     private Paint mGreen = new Paint();
     private final Paint mBlack = new Paint();
     private final Paint mYellow = new Paint();
@@ -52,13 +48,11 @@ public class FeedbackClickView extends ViewGroup{
 	Point g = new Point();
 	Point h = new Point();
 	
-	//boolean scroll=true,contextualMenu=false, feedback=true;
     
     public FeedbackClickView (Context context){
     	
     	super (context);
     	
-    	//paintBlack.setColor(Color.BLACK);
         paintWhite.setColor(Color.WHITE);
         
         paintWhite.setStrokeWidth(4);
@@ -83,11 +77,8 @@ public class FeedbackClickView extends ViewGroup{
         mBlack.setStrokeWidth(3);
         mBlack.setColor(Color.BLACK);
         
-        //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        
         mButton="clear";
         oval = new RectF(50,50,150,150);
-        		//(posx+50, posy+50, posx+150, posy+150);
         deg=0;
 
     }
@@ -102,14 +93,17 @@ public class FeedbackClickView extends ViewGroup{
         int right =  getWidth() - getPaddingRight();
         int bottom = getHeight() - getPaddingBottom();
         
+        //Scroll buttons are drawn in the different scrollable areas.
         scrollableAreas=getScrollableAreas();
         for (int i=0;i<scrollableAreas.size();i++){
-        	//scroll=false;
-	    	if (scrollableAreas.get(i)==null){Log.w("prints","LV: scrollable es null");}
+	    	if (scrollableAreas.get(i)==null){
+	    		Log.w("prints","LV: scrollable es null");
+	    		}
 	    	
 	    	else {
 	    		scrollableAreas.get(i).getBoundsInScreen(outBounds);
 	    		if((outBounds.right>right-90)&&(outBounds.bottom>bottom-90)){
+	    			//If the scroll button is over home button, we draw it in another position.
 	    			canvas.drawRect(outBounds.right-80, bottom-180, outBounds.right, bottom-100, paintWhite);
 	    			a.set(outBounds.right-50, bottom-130);
 		            b.set(outBounds.right-30, bottom-130);
@@ -207,10 +201,14 @@ public class FeedbackClickView extends ViewGroup{
 	    	}
         }
     	
-        
+        //Home contexual menu
         if (getMenuContextual().equals("home")){
+        	
+        	//Two yellow squares that represent menu options
         	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
         	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
+        	
+        	//House that represents Home option
         	canvas.drawRect(right/2-90, bottom/2-130, right/2+90, bottom/2-50, mBlack);
         	a.set(right/2-90, bottom/2-130);
             b.set(right/2+90, bottom/2-130);
@@ -222,6 +220,7 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, mBlack);
             
+            //Arrow that represents click option
         	a.set(right/2-90, bottom/2+50);
             b.set(right/2-75, bottom/2+170);
             c.set(right/2+30, bottom/2+65);
@@ -239,11 +238,15 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, mBlack);	
         }
+        
+        //Scroll backward contextual menu
         if (getMenuContextual().equals("scrollbackward")){
         	Log.i("prints","scroll backward contextual menu");
+        	//Two yellow squares that represent menu options
         	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
         	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
         	
+        	//Picture that represents scroll backward option
     		a.set(right/2-30,bottom/2-110);
             b.set(right/2+30, bottom/2-110);
             c.set(right/2+30, bottom/2-170);
@@ -274,6 +277,7 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, paintBlack);
             
+            //Arrow that represents click option
         	a.set(right/2-90, bottom/2+50);
             b.set(right/2-75, bottom/2+170);
             c.set(right/2+30, bottom/2+65);
@@ -294,9 +298,12 @@ public class FeedbackClickView extends ViewGroup{
         }
         if (getMenuContextual().equals("scrollforward")){
         	Log.i("prints","scroll backward contextual menu");
+        	
+        	//Two yellow squares that represent menu options
         	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
         	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
         	
+        	//Picture that represents scroll backward option
     		a.set(right/2-30,bottom/2-110);
             b.set(right/2+30, bottom/2-110);
             c.set(right/2+30, bottom/2-170);
@@ -327,6 +334,7 @@ public class FeedbackClickView extends ViewGroup{
             path.close();
             canvas.drawPath(path, paintBlack);
             
+          //Arrow that represents click option
         	a.set(right/2-90, bottom/2+50);
             b.set(right/2-75, bottom/2+170);
             c.set(right/2+30, bottom/2+65);
@@ -347,10 +355,13 @@ public class FeedbackClickView extends ViewGroup{
         }
         if (getMenuContextual().equals("back")){
         	Log.i("prints","scroll backward contextual menu");
+        	
+        	//Two yellow squares that represent menu options
         	canvas.drawRect(right/2-120, bottom/2-260, right/2+120, bottom/2-20, mYellow);
         	canvas.drawRect(right/2-120, bottom/2+20, right/2+120, bottom/2+260, mYellow);
         	paintBlack.setStyle(Paint.Style.STROKE);
         	
+        	//Arrow that represents back option
         	canvas.drawRect(right/2-30, bottom/2-110, right/2+60, bottom/2-110, paintBlack);
             oval.set(right/2+30, bottom/2-170, right/2+90,bottom/2-110);
             canvas.drawArc(oval, 270, 180, true, paintBlack);
@@ -364,6 +375,8 @@ public class FeedbackClickView extends ViewGroup{
             path.lineTo(c.x, c.y);
             canvas.drawPath(path, paintBlack);
             
+            
+          //Arrow that represents click option
         	a.set(right/2-90, bottom/2+50);
             b.set(right/2-75, bottom/2+170);
             c.set(right/2+30, bottom/2+65);
@@ -395,16 +408,7 @@ public class FeedbackClickView extends ViewGroup{
         }
 		
 		canvas.drawArc(oval, 270, getDegr(), true, mGreen);
-		//feedback=false;
-        /*
-        if ((node!=null)&&(!nodeNull)){
-        	node.getBoundsInScreen(mTemp);
-        	canvas.drawRect(mTemp, mPaint);
-        }*/
-        
-        //if ((scroll)||(feedback)||(contextualMenu)){
-        //invalidate();
-        //}
+
     }
 	
 	void setXY(int x, int y){
@@ -426,20 +430,9 @@ public class FeedbackClickView extends ViewGroup{
 	public int getDegr(){
 		return deg;
 	}
-	/*
-	public void setNode(AccessibilityNodeInfoCompat compn){
-		Log.i("prints"," es fa un set node");
-		node=compn;
-	}
-	public void setNodeNull(boolean esNull){
-		//if(esNull) Log.i("prints","El node compn es null");
-		//else Log.i("prints", " el node compn NO es null");
-		nodeNull=esNull;
-	}*/
 	public void setMenuContextual(String button){
 		Log.i("prints", " el node compn NO es null");
 		invalidate();
-		//contextualMenu=true;
 		mButton=button;
 	}
 	public String getMenuContextual(){
@@ -454,7 +447,6 @@ public class FeedbackClickView extends ViewGroup{
     	return node;
     }
     public void setScrollableAreas (List <AccessibilityNodeInfoCompat> scrollables){
-    	//scroll=true;
     	invalidate();
     	scrollableAreas.clear();
     	for (int i=0;i<scrollables.size();i++){

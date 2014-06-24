@@ -38,24 +38,27 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	private final int NOTIFICATION_ID = 1010;
 	private ListenerView mLV;
 	private FeedbackClickView mFCV;
-	//private OnTouchListener OTL;
-	//private long tsTempDown;
 	private Context mContext;
+	
+	//clickTime -> time to make click 
 	private long clickTime=2000;
 	private long clickTimeSec=clickTime/20;
 	private int deg=0;
 	private float clickx,clicky;
+	
+	//Button that is pressed
 	private String button="clear";
+	
+	//Timer true when time is enough to click
 	private boolean timer=false;
 	private static final Method METHOD_performGlobalAction = CompatUtils.getMethod(
             AccessibilityService.class, "performGlobalAction", int.class);
 	private states current_state = states.WAIT_EVENT;
 	private List <AccessibilityNodeInfoCompat> scrollables = new ArrayList <AccessibilityNodeInfoCompat> ();
 	private AccessibilityNodeInfoCompat scrollableNode;
-
-    //int right =  LV.getWidth() - LV.getPaddingRight();
-    //int bottom = LV.getHeight() - LV.getPaddingBottom();
 	
+	
+	//State machine states
 	public enum states{
 		WAIT_EVENT,
 		WAIT_T1,
@@ -64,10 +67,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
 	@Override
     public void onServiceConnected() {
-		Log.i("prints","entra onServiceConnected del Overlay");
+		Log.i("prints","onServiceConnected");
 		triggerNotification();
 		createOverlayView(mContext);
-		//showScrollButtons();
 		
     }
 	
@@ -76,7 +78,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	@Override
 	public void onInterrupt() {
 		// TODO Auto-generated method stub
-		Log.i("prints","entra onInterrupt del Overlay");
+		Log.i("prints","onInterrupt");
 	}
 	
 	@Override
@@ -101,7 +103,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		
-		Log.i("prints","on touch "+current_state);
+		
+		//Log.i("prints","on touch "+current_state);
 		stateMachineProcessInput(event);
 		
 		
@@ -114,7 +117,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	}
  
 	void createFeedbackClickView(Context context){
-		//Log.i("prints","entra createFeedBackClickView del Overlay");
+		//The overlay with visual feedback and scroll buttons is created here. It's a FeedbackClickView.
 		
 		mContext=context;
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +135,6 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         // The whole screen is covered (including status bar)
         feedbackParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         // ////////////////////////////////////////////////////////////////////////////////
-       
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         
@@ -140,8 +142,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
         	
             mFCV = new FeedbackClickView(this.getApplicationContext());
 
-            //mFCV.setXY(x,y);
-            //mFCV.setRadius(per);
+            showScrollButtons();
         	wm.addView(mFCV, feedbackParams);
         }
         Log.i("prints","acaba createFeedbackClickView del Overlay");
@@ -149,8 +150,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
  
 	void createOverlayView(Context context) {
-		//Log.i("prints","entra createOverlayView del Overlay");
-	
+		//The overlay with global buttons that listens touch events is created here. It's a ListenerView.
+		
 		mContext=context;
 		// ////////////////////////////////////////////////////////////////////////////////
         // ListenerView
@@ -189,7 +190,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    {
 	    	wm.removeViewImmediate(mFCV);
 	    	mFCV = null;
-	    	Log.i("prints","acaba destroyFeedbackClickView");
+	    	Log.i("prints","end of destroyFeedbackClickView");
 	    }
 	}
 	/* package */ void destroyOverlayView(Context context)
@@ -200,7 +201,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    {
 	    	wm.removeViewImmediate(mLV);
 	    	mLV = null;
-	    	Log.i("prints","acaba destroyOverlayView");
+	    	Log.i("prints","end of destroyOverlayView");
 	    }
 	}
 	
@@ -213,19 +214,19 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	};
 	
 
-	//Touch Overlay Listener 
 	public void click(float x,float y){
+		//inject the click 
+		
 		destroyOverlayView(mContext);
-		//Log.i("prints","entra click del Overlay");
 		int posx = (int)x;
 		int posy = (int) y;
 
 		AccessibilityNodeInfoCompat node = findNode();
-		if(node!=null){Log.i("prints", "el node no es null "+posx+"  "+posy);}	
+		if(node!=null){Log.i("prints", "node is not null "+posx+"  "+posy);}	
 		AccessibilityNodeInfoCompat comp = findComponentClickable(node,posx, posy);
 
 		if (comp != null) {
-			Log.i("prints","injecta click del Overlay");
+			Log.i("prints","inject click");
 					boolean s = comp.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
 					}
 		
@@ -253,12 +254,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	}
 	
 	private void findComponentScrollable(AccessibilityNodeInfoCompat root) {
-		//scrollables.clear();
 		try {
 			if(root.isScrollable()){
 				Log.w("prints","isScrollable");
 				scrollables.add(root);
-				//return root;
 			}
 
 			for (int i = 0; i < root.getChildCount(); i++) {
@@ -267,14 +266,13 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			//return null;
 		}
 		
 }
 	
 	private AccessibilityNodeInfoCompat findComponentClickable(AccessibilityNodeInfoCompat root, int posx, int posy) {
 			try {
-				Log.i("prints","entra findComponentClickable del Overlay");
+				Log.i("prints","findComponentClickable");
 				Rect window = new Rect();
 				AccessibilityNodeInfoCompat node = null;
 
@@ -282,10 +280,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 					root.getChild(i).getBoundsInScreen(window);
 					if (window.contains(posx, posy)) {
 						if (root.getChild(i).getChildCount() > 0) {
-							//count++;
 							node = findComponentClickable(root.getChild(i), posx,
 									posy);
-							//count--;
 						}
 						if (node == null && root.getChild(i).isClickable()) {
 							node = root.getChild(i);
@@ -294,7 +290,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
 					}
 
-				}Log.i("prints","surt findComponentClickable del Overlay");
+				}Log.i("prints","end of findComponentClickable");
 		
 				return node;
 			} catch (Exception e) {
@@ -327,33 +323,28 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	
 	
 	private void triggerNotification(){
+		//The idea is that this notification allows you to switch off the service. Now you can only access the application information and stop it there.
 	    
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        //Notification notification = new Notification(R.drawable.images, "¡Nuevo mensaje!", System.currentTimeMillis());
         Notification notification = new Notification.Builder(this)
         .setContentText("Hola hola")
         .setSmallIcon(R.drawable.images)
         .setWhen(System.currentTimeMillis())
-        //.addAction(R.drawable.ic_launcher, "Apaga TouchAccessibility",destroyOverlay(mContext) )
         .build();
         
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
         contentView.setImageViewResource(R.id.img_notification, R.drawable.images);
-        contentView.setTextViewText(R.id.txt_notification, "Ey mundo! Esta es mi notificación personalizada.");
+        contentView.setTextViewText(R.id.txt_notification, "Switch off TouchAccessibility.");
         
         notification.contentView = contentView;
-        /*
-        Intent notificationIntent = new Intent(this, OverlayManager.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        notification.contentIntent = contentIntent;*/
-        
-        
-        
+       
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
+	
 	public static boolean performGlobalAction(AccessibilityService service, int action) {
         return (Boolean) CompatUtils.invoke(service, false, METHOD_performGlobalAction, action);
     }
+	
 	
 	public void stateMachineProcessInput (MotionEvent me){
 		switch (current_state){
@@ -364,10 +355,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			case WAIT_T1:
 				Log.i("prints","WAIT_T1");
 				process_wait_t1(me);
-				//Log.i("prints","endwaitt1");
 				break;
 			case CONTEXTUAL_MENU:
-				Log.i("prints","HOME_CONTEXTUAL_MENU");
+				Log.i("prints","CONTEXTUAL_MENU");
 				contextual_menu(me);
 				break;
 			default:
@@ -381,13 +371,16 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	public void process_wait (MotionEvent me){
 		h3.sendEmptyMessage(0);
 		if (me.getAction()==MotionEvent.ACTION_DOWN){
-			//createFeedbackClickView(mContext);
 			Log.i("prints","eventdown");
 			current_state = states.WAIT_T1;
 			timer=false;
+			//We send a delayed message to know when the time is enough to click.
 			h1.sendEmptyMessageDelayed(0,clickTime);
+			//We send this delayed message to update the visual feedback
 			h2.sendEmptyMessageDelayed(0, clickTimeSec);
+			
 			if(mFCV!=null){
+				//The position of the finger to know visual feedback position
 				mFCV.setXY((int) me.getX(), (int) me.getY());
 			}
 			else{
@@ -398,6 +391,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	}
 	public void process_wait_t1 (MotionEvent me){
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(!timer)){
+			//time is not enough to make any action
 			Log.i("prints","eventup");
 			timer=false;
 			h1.removeMessages(0);
@@ -405,11 +399,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			mFCV.setDeg(deg);
 			h2.removeMessages(0);
 			current_state = states.WAIT_EVENT;
-			//destroyFeedbackClickView(mContext);
 			Log.i("prints","end wait t1");
 		}
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isHomeButton((int)me.getX(),(int) me.getY()))&&(!isScrollForwardButton((int)me.getX(),(int) me.getY()))&&(!isScrollBackwardButton((int)me.getX(),(int) me.getY()))&&(!isBackButton((int)me.getX(),(int) me.getY()))){
-			Log.i("prints","eventup+click");
+			//Time is enough to click and there isn't any overlay button under the finger.
 			timer=false;
 			h1.removeMessages(0);
 			deg=0;
@@ -421,6 +414,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			stateMachineProcessInput(me);
 		}
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isScrollForwardButton((int)me.getX(),(int) me.getY()))){
+			//The user has pressed enough time on the scroll forward button.
 			Log.i("prints","eventup+click");
 			timer=false;
 			h1.removeMessages(0);
@@ -431,6 +425,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
 			
 			if(comp!=null){
+				//There is a clickable component below. The contextual menu is going to be shown.
 				button="scrollforward";
 				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
@@ -444,6 +439,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			}
 			else{
+				//There isn't any clickable component below, so the action is made.
 				scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
 				current_state = states.WAIT_EVENT;
 				stateMachineProcessInput(me);
@@ -452,6 +448,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 		
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isScrollBackwardButton((int)me.getX(),(int) me.getY()))){
+			//Time is enough and scroll backward button is pressed.
 			Log.i("prints","eventup+click");
 			timer=false;
 			h1.removeMessages(0);
@@ -462,6 +459,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
 			
 			if(comp!=null){
+				//There is a clickable component below. The contextual menu is going to be shown.
 				button="scrollbackward";
 				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
@@ -475,6 +473,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 			}
 			else{
+				//There isn't any clickable component below, so the action is made.
 				scrollableNode.performAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
 				current_state = states.WAIT_EVENT;
 				stateMachineProcessInput(me);
@@ -484,6 +483,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 		
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isBackButton((int) me.getX(), (int) me.getY()))){
+			//Time is enough and back button is pressed.
 			timer=false;
 			h1.removeMessages(0);
 			deg=0;
@@ -492,7 +492,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			//destroyFeedbackClickView(mContext);
 			AccessibilityNodeInfoCompat node = findNode();
 			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			
 			if(comp!=null){
+				//There is a clickable component below. The contextual menu is going to be shown.
 				button="back";
 				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
@@ -506,6 +508,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			}
 			
 			else{
+				//There isn't any clickable component below, so the action is made.
 				destroyFeedbackClickView(mContext);
 				Log.i("prints","actionhome");
 				destroyOverlayView(mContext);
@@ -517,6 +520,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			
 		}
 		if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isHomeButton((int) me.getX(), (int) me.getY()))){
+			//Time is enough and back button is pressed.
 			timer=false;
 			h1.removeMessages(0);
 			deg=0;
@@ -525,7 +529,9 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			//destroyFeedbackClickView(mContext);
 			AccessibilityNodeInfoCompat node = findNode();
 			AccessibilityNodeInfoCompat comp = findComponentClickable(node,(int) me.getX(), (int) me.getY());
+			
 			if(comp!=null){
+				//There is a clickable component below. The contextual menu is going to be shown.
 				button="home";
 				mFCV.setMenuContextual(button);
 				destroyFeedbackClickView(mContext);
@@ -540,6 +546,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			}
 			
 			else{
+				//There isn't any clickable component below, so the action is made.
 				destroyFeedbackClickView(mContext);
 				Log.i("prints","actionhome");
 				destroyOverlayView(mContext);
@@ -570,10 +577,10 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				timer=false;
 				h4.sendEmptyMessageDelayed(0,clickTime);
 				h2.sendEmptyMessageDelayed(0, clickTimeSec);
-				//if(mFCV!=null){
 				mFCV.setXY((int) me.getX(), (int) me.getY());
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(!timer)){
+				//time is not enough to make any action
 				Log.i("prints","eventup");
 				timer=false;
 				h4.removeMessages(0);
@@ -584,6 +591,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			}
 			
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMGlobalOrScrollButton((int) me.getX(), (int) me.getY()))){
+				//Time is enough and global or scroll option from contextual menu is pressed.
 				Log.w("prints","HOME");
 				timer=false;
 				h4.removeMessages(0);
@@ -613,6 +621,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				stateMachineProcessInput(me);
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(isCMClick((int) me.getX(), (int) me.getY()))){
+				//Time is enough and click option from contextual menu is pressed.
 				Log.w("prints","click");
 				timer=false;
 				h4.removeMessages(0);
@@ -628,6 +637,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 				
 			}
 			if((me.getAction() == MotionEvent.ACTION_UP)&&(timer)&&(!isCMClick((int) me.getX(), (int) me.getY()))&&(!isCMGlobalOrScrollButton((int) me.getX(), (int) me.getY()))){
+				//Time is enough and any option from contextual menu is pressed. Contextual menu is not shown anymore.
 				Log.w("prints","menu contextual fuera");
 				timer=false;
 				h4.removeMessages(0);
@@ -642,6 +652,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		}
 	}
 
+	//Message to know if the time is enough to click.
 	private Handler h1 = new Handler() {
     	@Override
     	public void handleMessage (Message msg) {  
@@ -651,13 +662,12 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	} 
 	};
 	
+	//Update the visual feedback
 	private Handler h2 = new Handler() {
     	@Override
     	public void handleMessage (Message msg) {  
     		if(deg<360){
-    			//createFeedbackClickView(mContext);
     			mFCV.setDeg(18+deg);
-    			//Log.i("prints"," "+deg);
     			deg=18+deg;
     			h2.sendEmptyMessageDelayed(0, clickTimeSec);
     		}
@@ -672,6 +682,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	}
 	};
 	
+	//Message to know if the time is enough to click and contextual menu must be shown.
 	private Handler h4 = new Handler() {
     	@Override
     	public void handleMessage (Message msg) {  
@@ -681,6 +692,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
     	} 
 	};
 	
+	//isHomeButton returns true if the position of the finger is over the home button on the overlay.
 	public boolean isHomeButton(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
@@ -692,6 +704,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
+	
+	//isBackButton returns true if the position of the finger is over the back button on the overlay.
 	public boolean isBackButton(int posx, int posy){
 		Log.e("prints","Bb");
 		int left =  mLV.getPaddingLeft();
@@ -705,6 +719,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 		 }
 	}
 	
+	//isScrollForwardButton returns true if the position of the finger is over the forward scroll button on the overlay.
 	public boolean isScrollForwardButton(int posx, int posy){
 
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
@@ -730,6 +745,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    return false;
 	}
 	
+	//isScrollBackwardButton returns true if the position of the finger is over the backward scroll button on the overlay.
 	public boolean isScrollBackwardButton (int posx, int posy){
 	    
 		Rect outBounds = new Rect ();
@@ -744,6 +760,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 	    return false;
 	}
 	
+	//isCMClick returns true if the position of the finger is over the click option of the contextual menu on the overlay.
 	public boolean isCMClick(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
@@ -754,6 +771,8 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 			 return false;
 		 }
 	}
+	
+	//isCMGlobalOrScrollButton returns true if the position of the finger is over the global or scroll option of the contextual menu on the overlay.
 	public boolean isCMGlobalOrScrollButton(int posx, int posy){
 		int right =  mLV.getWidth() - mLV.getPaddingRight();
 	    int bottom = mLV.getHeight() - mLV.getPaddingBottom();
@@ -780,6 +799,7 @@ public class OverlayManager extends AccessibilityService implements OnTouchListe
 
         return current;
     }
+	
 	public void showScrollButtons(){
 		scrollables.clear();
 		Log.i("prints","Window content changed");
